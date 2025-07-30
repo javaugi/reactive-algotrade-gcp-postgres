@@ -3,9 +3,9 @@
 name: Deploy to GCP GKE
 
 on:
+  workflow_dispatch: # Manual trigger only and Commented out the following push trigger to auto deployment when new code is pushed
   # push:
   #   branches: [ "main" ]
-  workflow_dispatch:
 
 env:
   GCP_PROJECT: your-project-id
@@ -14,7 +14,8 @@ env:
   GCR_REPOSITORY: gcr.io/${{ env.GCP_PROJECT }}
 
 jobs:
-  setup-build-publish-deploy:
+  setup-build-publish-deploy:  #skip deployment unless a specific condition is met - deploy in the message
+    if: github.event_name == 'workflow_dispatch' || contains(github.event.head_commit.message, '[deploy]')
     name: Setup, Build, Publish, and Deploy
     runs-on: ubuntu-latest
 
