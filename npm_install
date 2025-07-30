@@ -1,0 +1,25 @@
+#!/bin/sh
+reset
+npm install -g npm
+#npm ls @vaadin/react-components-pro            # final waring and package dependencies
+#npm uninstall @vaadin/react-components-pro     # uninstall those not used
+#rm -rf node_modules package-lock.json          # clean up
+npm install react-router-dom
+#yarn add react-router-dom
+npm uninstall react-scripts
+npm uninstall eslint
+npm uninstall eslint-config-react-app
+npm install axios
+npm install react-cookie
+npm install web-vitals
+npm install bootstrap
+npm install reactstrap
+npm install --save-dev @testing-library/react @testing-library/jest-dom
+#npm test -- --verbose                          # run test debug
+#npm test -- --watch                            # run test watch mode
+npm install -g npm-check-updates
+ncu                             # See available updates
+ncu -u                          # Update package.json to latest versions
+npm install                     # Install the updated packages
+npm audit fix --force
+npm fund

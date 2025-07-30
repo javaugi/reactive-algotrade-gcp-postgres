@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS patients (
+    id VARCHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    name VARCHAR(200),
+    email VARCHAR(200),
+    phone VARCHAR(50),
+    address VARCHAR(200),
+    birth_date TIMESTAMP WITH TIME ZONE,
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)

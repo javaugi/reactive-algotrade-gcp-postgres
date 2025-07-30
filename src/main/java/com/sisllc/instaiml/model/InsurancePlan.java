@@ -1,0 +1,55 @@
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+package com.sisllc.instaiml.model;
+
+import java.time.OffsetDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
+
+@Data
+@Builder(toBuilder = true)
+@AllArgsConstructor
+@Table("insurancePlans")
+public class InsurancePlan {
+    @Id 
+    private String id;
+        
+    @Column("insurance_company_id")
+    private String insuranceCompanyId;
+        
+    @Column("plan_name")
+    private String planName;
+
+    @Column("plan_type")
+    private String planType;
+
+    @Column("network_type")
+    private String networkType;
+
+    @Column("tier_level")
+    private String tierLevel;
+
+    private boolean active;
+
+    @Column("effective_date")
+    private OffsetDateTime effectiveDate;
+
+    @Column("expiration_date")
+    private OffsetDateTime expirationDate;
+
+    @CreatedDate
+    @Column("created_date")
+    private OffsetDateTime createdDate;   
+
+    @LastModifiedDate
+    @Column("updated_date")
+    private OffsetDateTime updatedDate;
+}

@@ -1,0 +1,126 @@
+postgres:
+  queries:
+    premiumByPlanTypeTierAnalysis: >-
+      SELECT p.plan_Type AS planType,
+      p.tier_Level as TierLevel,
+      AVG(pp.base_Premium * g.adjustment_Factor) AS avgAdjustedPremium,
+      MIN(pp.base_Premium * g.adjustment_Factor) AS minPremium,
+      MAX(pp.base_Premium * g.adjustment_Factor) AS maxPremium,
+      COUNT(DISTINCT p.id) AS planCount
+      FROM insurancePlans p
+      JOIN planPricings pp ON p.id = pp.insurance_Plan_Id
+      JOIN geographicPricings g ON p.id = g.insurance_Plan_Id
+      WHERE pp.age_Bracket = '40-49'
+      AND g.rating_Area = 12
+      AND p.active = TRUE
+      GROUP BY p.plan_Type, p.tier_Level
+    costVsCoverageAnalysis: >-
+      SELECT p.id AS id,
+      p.plan_Name AS planName,
+      c.deductible_Individual AS deductibleIndividual,
+      c.oop_Max_Individual AS oopMaxIndividual,
+      pp.base_Premium AS basePremium,
+      (pp.base_Premium * 12 + c.deductible_Individual) AS estimatedAnnualCost,
+      ROUND(AVG(cl.allowed_Amount)) AS avgClaimCost,
+      COUNT(cl.id) AS claimCount
+      FROM insurancePlans p
+      JOIN coverageDetails c ON p.id = c.insurance_Plan_Id
+      JOIN planPricings pp ON p.id = pp.insurance_Plan_Id
+      LEFT JOIN claimsData cl ON p.id = cl.insurance_Plan_Id
+      WHERE pp.age_Bracket = '30-39'
+      AND p.tier_Level = 'Silver'
+      GROUP BY p.id, p.plan_Name, c.deductible_Individual, c.oop_Max_Individual, pp.base_Premium
+      ORDER BY estimatedAnnualCost
+    tobaccoSurchargeImpactAnalysis: >-
+      SELECT p.id AS id,
+      p.plan_Name AS planName,
+      ic.company_Name AS companyName,
+      pp.age_Bracket AS ageBracket,
+      pp.base_Premium AS nonTobaccoPremium,
+      (pp.base_Premium + pp.tobacco_Surcharge) AS tobaccoPremium,
+      ROUND((pp.tobacco_Surcharge / pp.base_Premium) * 100, 2) AS surchargePercentage,
+      COUNT(m.id) FILTER (WHERE m.tobacco_User = TRUE) AS tobaccoUsers,
+      COUNT(m.id) FILTER (WHERE m.tobacco_User = FALSE) AS nonTobaccoUsers
+      FROM insurancePlans p
+      JOIN planPricings pp ON p.id = pp.insurance_Plan_Id
+      JOIN insuranceCompanies ic ON p.insurance_Company_Id = ic.id
+      LEFT JOIN members m ON p.id = m.insurance_Plan_Id
+      GROUP BY p.id, p.plan_Name, ic.company_Name, pp.age_Bracket, pp.base_Premium, pp.tobacco_Surcharge
+      ORDER BY surchargePercentage DESC
+    marketBenchmarkingAnalysis: >-
+      SELECT ic.company_Name AS companyName,
+      p.tier_Level AS tierLevel,
+      p.plan_Type AS planType,
+      ROUND(AVG(pp.base_Premium), 2) AS avgBasePremium,
+      ROUND(AVG(pp.base_Premium * g.adjustment_Factor), 2) AS avgAdjustedPremium,
+      ic.market_Share AS marketShare
+      FROM insurancePlans p
+      JOIN insuranceCompanies ic ON p.insurance_Company_Id = ic.id
+      JOIN planPricings pp ON p.id = pp.insurance_Plan_Id
+      JOIN geographicPricings g ON p.id = g.insurance_Plan_Id
+      WHERE pp.age_Bracket = '40-49'
+      AND g.rating_Area = 5
+      AND p.active = TRUE
+      GROUP BY ic.company_Name, p.tier_Level, p.plan_Type, ic.market_Share
+      ORDER BY p.tier_Level, avgAdjustedPremium
+    premiumVsAgeAnalysis: >-
+      SELECT pp.age_Bracket as ageBracket,
+      ROUND(AVG(pp.base_Premium), 2) AS avgPremium,
+      ROUND(AVG(pp.base_Premium) - LAG(ROUND(AVG(pp.base_Premium), 2)) OVER (ORDER BY MIN(ageSortOrder)), 2) AS premiumIncrease,
+      ROUND((AVG(pp.base_Premium) - LAG(AVG(pp.base_Premium)) OVER (ORDER BY MIN(ageSortOrder))) / 
+      LAG(AVG(pp.base_Premium)) OVER (ORDER BY MIN(ageSortOrder)) * 100, 2) AS percentIncrease
+      FROM planPricings pp
+      JOIN 
+      (SELECT age_Bracket, 
+      CASE 
+      WHEN age_Bracket = '0-20' THEN 1
+      WHEN age_Bracket = '21-29' THEN 2
+      WHEN age_Bracket = '30-39' THEN 3
+      WHEN age_Bracket = '40-49' THEN 4
+      WHEN age_Bracket = '50-59' THEN 5
+      ELSE 6 
+      END AS ageSortOrder
+      FROM planPricings
+      GROUP BY age_Bracket) ages ON pp.age_Bracket = ages.age_Bracket
+      GROUP BY pp.age_Bracket, ages.ageSortOrder
+      ORDER BY ages.ageSortOrder
+    riskPoolAnalysis: >-
+      SELECT p.id AS id,
+      p.plan_Name AS planName,
+      COUNT(m.id) AS enrolledMembers,
+      SUM(pp.base_Premium * 12) AS annualPremiumVolume,
+      SUM(cl.allowed_Amount) AS annualClaimsCosts,
+      (SUM(pp.base_Premium * 12) - SUM(cl.allowed_Amount)) AS underwritingResult,
+      ROUND((SUM(cl.allowed_Amount) / SUM(pp.base_Premium * 12)) * 100, 2) AS lossRatio
+      FROM insurancePlans p
+      JOIN members m ON p.id = m.insurance_Plan_Id
+      JOIN planPricings pp ON p.id = pp.insurance_Plan_Id AND 
+      pp.age_Bracket = CASE 
+      WHEN EXTRACT(YEAR FROM AGE(m.birth_Date)) BETWEEN 0 AND 20 THEN '0-20'
+      WHEN EXTRACT(YEAR FROM AGE(m.birth_Date)) BETWEEN 21 AND 29 THEN '21-29'
+      WHEN EXTRACT(YEAR FROM AGE(m.birth_Date)) BETWEEN 30 AND 39 THEN '30-39'
+      WHEN EXTRACT(YEAR FROM AGE(m.birth_Date)) BETWEEN 40 AND 49 THEN '40-49'
+      ELSE '50+'
+      END
+      LEFT JOIN claimsData cl ON p.id = cl.insurance_Plan_Id AND 
+      cl.service_Date BETWEEN '2023-01-01' AND '2023-12-31'
+      WHERE p.active = TRUE
+      GROUP BY p.id, p.plan_Name
+      ORDER BY lossRatio DESC
+    networkAdequacyImpactAnalysis: >-
+      SELECT p.plan_Name AS planName,
+      COUNT(DISTINCT pr.id) FILTER (WHERE pr.network_Status = 'In-Network') AS inNetworkProviders,
+      COUNT(DISTINCT cl.id) FILTER (WHERE pr.network_Status = 'In-Network') AS inNetworkClaims,
+      COUNT(DISTINCT cl.id) FILTER (WHERE pr.network_Status = 'Out-of-Network') AS outOfNetworkClaims,
+      ROUND(AVG(cl.allowed_Amount) FILTER (WHERE pr.network_Status = 'In-Network'), 2) AS avgInNetworkCost,
+      ROUND(AVG(cl.allowed_Amount) FILTER (WHERE pr.network_Status = 'Out-of-Network'), 2) AS avgOutOfNetworkCost
+      FROM insurancePlans p
+      JOIN claimsData cl ON p.id = cl.insurance_Plan_Id
+      JOIN insuranceProviders pr ON cl.provider_Id = pr.id
+      GROUP BY p.plan_Name
+    premiumVsAgeSimpleAnalysis: >-
+      SELECT pp.age_Bracket as ageBracket,
+      ROUND(AVG(pp.base_Premium), 2) AS avgPremium
+      FROM planPricings pp
+      GROUP BY pp.age_Bracket
+      

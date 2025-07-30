@@ -1,0 +1,14 @@
+#Verify SSL Certificate:
+#
+#Check that the managed certificate is active:
+#
+#bash
+kubectl get managedcertificate
+#Enable HTTPS:
+#
+#Request an ACM certificate for espan360.com
+#
+#Update the ingress annotation with the certificate ARN
+#
+# This pipeline will automatically build, push Docker images to Google Container Registry (GCR), and deploy to GKE whenever code is pushed 
+#   to the main branch. The application will be accessible at https://espan360.com.

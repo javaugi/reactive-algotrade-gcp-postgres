@@ -1,0 +1,10 @@
+CREATE TABLE IF NOT EXISTS physicians (
+    id VARCHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    name VARCHAR(100),
+    specialty VARCHAR(50),
+    email VARCHAR(200),
+    phone VARCHAR(50),
+    address VARCHAR(200),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)

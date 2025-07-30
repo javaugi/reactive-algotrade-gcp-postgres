@@ -1,0 +1,8 @@
+#!/bin/sh
+reset
+echo "mvn clean install"
+mvn --version
+mvn clean install
+echo "mvn spring-boot:run"
+mvn spring-boot:run
+

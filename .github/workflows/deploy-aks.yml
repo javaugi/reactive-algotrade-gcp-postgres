@@ -1,0 +1,70 @@
+#4. GitHub Actions CI/CD Pipeline
+#.github/workflows/deploy.yml
+name: Deploy to GCP GKE
+
+on:
+  # push:
+  #   branches: [ "main" ]
+  workflow_dispatch:
+
+env:
+  GCP_PROJECT: your-project-id
+  GKE_CLUSTER: espan360-cluster
+  GKE_ZONE: us-central1
+  GCR_REPOSITORY: gcr.io/${{ env.GCP_PROJECT }}
+
+jobs:
+  setup-build-publish-deploy:
+    name: Setup, Build, Publish, and Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    # Configure gcloud CLI
+    - name: Authenticate to Google Cloud
+      uses: google-github-actions/auth@v1
+      with:
+        credentials_json: ${{ secrets.GCP_CREDENTIALS }}
+
+    - name: Set up Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+
+    - name: Configure Docker
+      run: gcloud auth configure-docker
+
+    # Build and push backend
+    - name: Build backend Docker image
+      run: docker build -t $GCR_REPOSITORY/backend:latest -f Dockerfile.backend .
+      
+    - name: Push backend Docker image
+      run: docker push $GCR_REPOSITORY/backend:latest
+
+    # Build and push frontend
+    - name: Build frontend Docker image
+      run: docker build -t $GCR_REPOSITORY/frontend:latest -f Dockerfile.frontend .
+      
+    - name: Push frontend Docker image
+      run: docker push $GCR_REPOSITORY/frontend:latest
+
+    # Configure kubectl
+    - name: Get GKE credentials
+      run: gcloud container clusters get-credentials $GKE_CLUSTER --zone $GKE_ZONE --project $GCP_PROJECT
+
+    # Deploy to Kubernetes
+    - name: Deploy backend
+      run: |
+        kubectl apply -f k8s/backend-deployment.yaml
+        kubectl apply -f k8s/backend-service.yaml
+
+    - name: Deploy frontend
+      run: |
+        kubectl apply -f k8s/frontend-deployment.yaml
+        kubectl apply -f k8s/frontend-service.yaml
+
+    - name: Deploy ingress
+      run: kubectl apply -f k8s/ingress.yaml
+
+    - name: Verify deployment
+      run: kubectl get pods,svc,ingress

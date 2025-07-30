@@ -1,0 +1,8 @@
+#!/bin/sh
+reset
+echo "Running: mvn clean package"
+mvn --version
+mvn clean package
+echo "Running docker-compose up --build"
+docker-compose up --build
+

@@ -1,0 +1,47 @@
+# AWS Deployment Pipeline for Spring Boot WebFlux + React App with PostgreSQL
+#Here's a complete CI/CD pipeline setup to deploy your reactive Spring Boot + React application to AWS using Docker and Kubernetes (EKS).
+#
+#Prerequisites
+#    AWS account with appropriate permissions
+#    EKS cluster configured
+#    RDS PostgreSQL instance
+#    Route53 domain (espan360.com) configured
+#    AWS CLI and eksctl installed and configured
+#    GitHub repository access
+
+#1. Infrastructure as Code (Terraform)
+#First, let's set up the infrastructure using Terraform.
+
+infra/eks-cluster.tf
+terraform
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_eks_cluster" "espan360" {
+  name     = "espan360-cluster"
+  role_arn = aws_iam_role.eks_cluster.arn
+
+  vpc_config {
+    subnet_ids = [aws_subnet.public_subnet1.id, aws_subnet.public_subnet2.id]
+  }
+
+  depends_on = [
+    aws_iam_role_policy_attachment.eks_cluster_policy
+  ]
+}
+
+resource "aws_eks_node_group" "espan360_nodes" {
+  cluster_name    = aws_eks_cluster.espan360.name
+  node_group_name = "espan360-node-group"
+  node_role_arn   = aws_iam_role.eks_nodes.arn
+  subnet_ids      = [aws_subnet.public_subnet1.id, aws_subnet.public_subnet2.id]
+
+  scaling_config {
+    desired_size = 2
+    max_size     = 3
+    min_size     = 1
+  }
+
+  instance_types = ["t3.medium"]
+}

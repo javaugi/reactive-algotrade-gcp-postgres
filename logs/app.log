@@ -1,0 +1,24 @@
+2025-07-30 09:51:49,825 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.sisllc.instaiml.MyReactiveApplicationTests]: MyReactiveApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-07-30 09:51:49,948 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.sisllc.instaiml.MyReactiveApplication for test class com.sisllc.instaiml.MyReactiveApplicationTests
+2025-07-30 09:51:50,306 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 09:51:51,091 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2025-07-30 09:51:51,212 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 113 ms. Found 17 R2DBC repository interfaces.
+2025-07-30 09:51:53,843 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-07-30 10:26:31,135 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.sisllc.instaiml.MyReactiveApplicationTests]: MyReactiveApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-07-30 10:26:31,263 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.sisllc.instaiml.MyReactiveApplication for test class com.sisllc.instaiml.MyReactiveApplicationTests
+2025-07-30 10:26:31,611 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 10:26:32,335 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2025-07-30 10:26:32,455 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 114 ms. Found 17 R2DBC repository interfaces.
+2025-07-30 10:26:34,794 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-07-30 15:28:13,784 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.sisllc.instaiml.MyReactiveApplicationTests]: MyReactiveApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-07-30 15:28:13,916 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.sisllc.instaiml.MyReactiveApplication for test class com.sisllc.instaiml.MyReactiveApplicationTests
+2025-07-30 15:28:14,277 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 15:28:15,053 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2025-07-30 15:28:15,173 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 112 ms. Found 17 R2DBC repository interfaces.
+2025-07-30 15:28:17,798 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'
+2025-07-30 16:00:09,887 [main] INFO  o.s.t.c.s.AnnotationConfigContextLoaderUtils - Could not detect default configuration classes for test class [com.sisllc.instaiml.MyReactiveApplicationTests]: MyReactiveApplicationTests does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2025-07-30 16:00:10,012 [main] INFO  o.s.b.t.c.SpringBootTestContextBootstrapper - Found @SpringBootConfiguration com.sisllc.instaiml.MyReactiveApplication for test class com.sisllc.instaiml.MyReactiveApplicationTests
+2025-07-30 16:00:10,365 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2025-07-30 16:00:11,148 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data R2DBC repositories in DEFAULT mode.
+2025-07-30 16:00:11,268 [main] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 113 ms. Found 17 R2DBC repository interfaces.
+2025-07-30 16:00:13,674 [main] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 1 endpoint beneath base path '/actuator'

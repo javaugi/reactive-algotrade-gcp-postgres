@@ -1,0 +1,6 @@
+#Push to GitHub:
+#
+#bash
+git add .
+git commit -m "Initial GCP deployment setup"
+git push origin main

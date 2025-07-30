@@ -1,0 +1,6 @@
+#!/bin/sh
+reset
+echo "mvn clean package"
+mvn --version
+mvn clean package
+java -jar target/algotrade.jar --spring.profiles.active=postgres

@@ -1,0 +1,9 @@
+CREATE TABLE IF NOT EXISTS medications (
+    id VARCHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
+    name VARCHAR(100),
+    description TEXT,
+    dosage VARCHAR(128),
+    unit VARCHAR(50),
+    created_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+    updated_date TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+)

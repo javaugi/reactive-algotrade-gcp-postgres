@@ -1,0 +1,74 @@
+#4. GitHub Actions CI/CD Pipeline
+#.github/workflows/deploy.yml
+name: Deploy to AWS EKS
+
+on:
+  push:
+    branches: [ main ]
+
+env:
+  AWS_REGION: us-east-1
+  ECR_REPOSITORY: espan360
+  EKS_CLUSTER: espan360-cluster
+  KUBE_CONFIG_FILE: kubeconfig.yaml
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v2
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ env.AWS_REGION }}
+
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    # Build and push backend
+    - name: Build backend Docker image
+      run: docker build -t $ECR_REPOSITORY/backend:latest -f Dockerfile.backend .
+      
+    - name: Push backend Docker image
+      run: |
+        docker tag $ECR_REPOSITORY/backend:latest ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY/backend:latest
+        docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY/backend:latest
+
+    # Build and push frontend
+    - name: Build frontend Docker image
+      run: docker build -t $ECR_REPOSITORY/frontend:latest -f Dockerfile.frontend .
+      
+    - name: Push frontend Docker image
+      run: |
+        docker tag $ECR_REPOSITORY/frontend:latest ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY/frontend:latest
+        docker push ${{ steps.login-ecr.outputs.registry }}/$ECR_REPOSITORY/frontend:latest
+
+    # Configure kubectl
+    - name: Install kubectl
+      uses: azure/setup-kubectl@v3
+
+    - name: Configure kubeconfig
+      run: |
+        aws eks --region $AWS_REGION update-kubeconfig --name $EKS_CLUSTER
+
+    # Deploy to Kubernetes
+    - name: Deploy backend
+      run: |
+        kubectl apply -f k8s/backend-deployment.yaml
+        kubectl apply -f k8s/backend-service.yaml
+
+    - name: Deploy frontend
+      run: |
+        kubectl apply -f k8s/frontend-deployment.yaml
+        kubectl apply -f k8s/frontend-service.yaml
+
+    - name: Deploy ingress
+      run: kubectl apply -f k8s/ingress.yaml
+
+    - name: Verify deployment
+      run: kubectl get pods,svc,ingress

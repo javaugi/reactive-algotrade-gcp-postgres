@@ -1,0 +1,6 @@
+#$Configure SSL Certificate:
+#
+#bash
+gcloud compute ssl-certificates create espan360-certificate \
+  --domains espan360.com \
+  --global

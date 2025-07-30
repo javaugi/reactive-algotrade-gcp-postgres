@@ -1,0 +1,8 @@
+#6. Post-Deployment Steps
+#Configure DNS:
+#
+#Get the external IP from the ingress:
+#
+#bash
+kubectl get ingress espan360-ingress -o jsonpath='{.status.loadBalancer.ingress[0].ip}'
+#Create an A record in your DNS provider for espan360.com pointing to this IP

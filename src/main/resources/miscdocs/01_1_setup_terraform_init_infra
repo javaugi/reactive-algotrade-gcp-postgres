@@ -1,0 +1,19 @@
+#GCP Deployment Pipeline for Spring Boot WebFlux + React App with PostgreSQL
+#Here's a complete CI/CD pipeline setup to deploy your reactive Spring Boot (Maven) + React application to Google Cloud Platform (GCP) 
+#using Docker and Kubernetes (GKE).
+#
+#Prerequisites
+#    Google Cloud account with billing enabled
+#    GKE cluster configured
+#    Cloud SQL PostgreSQL instance
+#    Google Cloud domain (espan360.com) configured
+#    gcloud CLI installed and configured
+#    GitHub repository access
+
+#5. Setup Instructions
+#Initialize Infrastructure:
+#
+#bash
+cd infra
+terraform init
+terraform apply
