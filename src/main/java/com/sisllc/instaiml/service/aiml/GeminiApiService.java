@@ -11,6 +11,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.sisllc.instaiml.config.AiConfig;
 import java.time.Duration;
 import java.util.Collections;
+import java.util.concurrent.TimeUnit;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,7 +35,6 @@ import reactor.netty.http.client.HttpClient;
 public class GeminiApiService {
 
     // Inject the RestTemplate configured for secure communication
-    private final WebClient webClient;
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper; // For JSON processing
 
@@ -47,32 +47,14 @@ public class GeminiApiService {
     @Value("${spring.ai.gemini.api-key:}    ")
     private String geminiApiKey; // Leave empty for Canvas auto-injection in JS, or load from properties
 
-    private static final String GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent";
     private static final int MAX_RETRIES = 5;
     private static final long INITIAL_BACKOFF_MILLIS = 1000;
-
-    private static final String GEMINI_FULL_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent";
-    private static final String GEMINI_FULL_API_URL_WITH_KEY = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=AIzaSyCtr381hUGjhtgDIW82tzR4HhX86bLsAhA";
-    // Use a more generic base URL to allow for different endpoints
-    private static final String GEMINI_BASE_URL = "https://generativelanguage.googleapis.com/v1beta/models/";
-    private static final String GEMINI_ENDPOINT_PATH = "gemini-2.5-flash-preview-05-20:generateContent";
-
-    private final String COMPLETE_URL_WITH_KEY;
 
     // Constructor to inject WebClient and ObjectMapper
     public GeminiApiService(@Qualifier(AiConfig.REST_TEMPLATE) RestTemplate restTemplate,
         WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
-
-        // Construct the query parameter for the API key
-        this.COMPLETE_URL_WITH_KEY = geminiApiUrl + "?key=" + geminiApiKey;
-
-        this.webClient = webClientBuilder.baseUrl(GEMINI_BASE_URL)
-            .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
-            .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
-            .defaultHeader(HttpHeaders.AUTHORIZATION, "Bearer " + geminiApiKey)
-            .build();
     }
 
     /**
@@ -85,21 +67,17 @@ public class GeminiApiService {
      */
     public Mono<String> queryByWebClient(String prompt) {
         // Build the request body using Jackson ObjectMapper
-        ObjectNode rootNode = objectMapper.createObjectNode();
-        ArrayNode contentsArray = rootNode.putArray("contents");
-        ObjectNode userPart = contentsArray.addObject();
-        ArrayNode partsArray = userPart.putArray("parts");
-        partsArray.addObject().put("text", prompt);
-        log.debug("queryByWebClient prompt {} geminiApiKey{}\n GEMINI_FULL_API_URL {}", prompt, geminiApiKey, GEMINI_FULL_API_URL);
+        ObjectNode rootNode = configRootNode(prompt);
+        log.debug("queryByWebClient prompt {} geminiApiUrl {}", prompt, geminiApiUrl);
 
         // Check if the API key is available
         if (!StringUtils.hasText(geminiApiKey)) {
             return Mono.error(new IllegalArgumentException("Gemini API key is not configured. Please check your application properties."));
         }
 
-        //String geminiUrlWithApiKey = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-05-20:generateContent?key=AIzaSyCtr381hUGjhtgDIW82tzR4HhX86bLsAhA";
         // Use WebClient to make the POST request
-        log.debug("queryByWebClient calling webClient geminiApiKey {}", geminiApiKey);
+        log.debug("queryByWebClient calling webClient geminiApiUrl {}", geminiApiUrl);
+        String urlWithApiKey = geminiApiUrl + "?key=" + geminiApiKey;
         return WebClient.builder()
             .clientConnector(new ReactorClientHttpConnector(HttpClient.create()
                 .responseTimeout(Duration.ofSeconds(30))))
@@ -107,7 +85,7 @@ public class GeminiApiService {
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .build()
             .post()
-            .uri(GEMINI_FULL_API_URL_WITH_KEY)
+            .uri(urlWithApiKey)
             .body(BodyInserters.fromValue(rootNode))
             .retrieve()
             .bodyToMono(String.class) // Retrieve the response body as a Mono<String>
@@ -121,10 +99,10 @@ public class GeminiApiService {
                         return Mono.just(candidate.asText());
                     } else {
                         // Handle cases where the response structure is unexpected
-                        System.err.println("Unexpected Gemini API response structure: " + responseBody);
+                        log.warn("Unexpected Gemini API response structure: " + responseBody);
                         return Mono.error(new RuntimeException("Unexpected Gemini API response structure."));
                     }
-                } catch (Exception e) {
+                } catch (JsonProcessingException e) {
                     return Mono.error(new RuntimeException("Failed to parse Gemini API response.", e));
                 }
             })
@@ -148,16 +126,8 @@ public class GeminiApiService {
      * @throws RuntimeException if the API call fails after retries.
      */
     public String queryByTemplate(String prompt) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
-
-        // Build the request body using Jackson ObjectMapper
-        ObjectNode rootNode = objectMapper.createObjectNode();
-        ArrayNode contentsArray = rootNode.putArray("contents");
-        ObjectNode userPart = contentsArray.addObject();
-        ArrayNode partsArray = userPart.putArray("parts");
-        partsArray.addObject().put("text", prompt);
+        HttpHeaders headers = configHeaders();
+        ObjectNode rootNode = configRootNode(prompt);
 
         // Optional: Add generationConfig for structured responses if needed
         // ObjectNode generationConfig = rootNode.putObject("generationConfig");
@@ -167,27 +137,26 @@ public class GeminiApiService {
         // responseSchema.putObject("properties").putObject("generatedText").put("type", "STRING");
         HttpEntity<String> requestEntity = new HttpEntity<>(rootNode.toString(), headers);
 
-        String urlWithApiKey = GEMINI_API_URL + "?key=" + geminiApiKey;
-
+        String urlWithApiKey = geminiApiUrl + "?key=" + geminiApiKey;
         for (int i = 0; i < MAX_RETRIES; i++) {
             log.debug("queryByTemplate calling restTemplate try {} prompt {}", i, prompt);
             try {
                 ResponseEntity<String> response = restTemplate.postForEntity(urlWithApiKey, requestEntity, String.class);
-                System.err.println("queryByTemplate response " + response);
+                log.debug("queryByTemplate response " + response);
 
                 if (response.getStatusCode().is2xxSuccessful() && response.getBody() != null) {
                     JsonNode responseJson = objectMapper.readTree(response.getBody());
                     JsonNode candidate = responseJson.at("/candidates/0/content/parts/0/text");
-                    System.err.println("queryByTemplate candidate " + candidate);
+                    log.debug("queryByTemplate candidate " + candidate);
                     if (candidate.isTextual()) {
                         return candidate.asText();
                     } else {
                         // Handle cases where the response structure is unexpected
-                        System.err.println("Unexpected Gemini API response structure: " + response.getBody());
+                        log.warn("Unexpected Gemini API response structure: " + response.getBody());
                         throw new RuntimeException("Unexpected Gemini API response structure.");
                     }
                 } else {
-                    System.err.println("Gemini API call failed with status: " + response.getStatusCode() + ", body: " + response.getBody());
+                    log.warn("Gemini API call failed with status: " + response.getStatusCode() + ", body: " + response.getBody());
                     // Retry for non-success status codes (e.g., 429 Too Many Requests, 5xx errors)
                     if (response.getStatusCode().is4xxClientError() && !response.getStatusCode().equals(org.springframework.http.HttpStatus.TOO_MANY_REQUESTS)) {
                         // Don't retry for client errors unless it's 429
@@ -195,23 +164,39 @@ public class GeminiApiService {
                     }
                 }
             } catch (JsonProcessingException | RuntimeException e) {
-                System.err.println("Error calling Gemini API (attempt " + (i + 1) + "): " + e.getMessage());
+                log.warn("Error calling Gemini API (attempt " + (i + 1) + "): ", e.getMessage());
                 if (i == MAX_RETRIES - 1) {
                     throw new RuntimeException("Failed to call Gemini API after " + MAX_RETRIES + " retries.", e);
                 }
             }
 
             // Exponential backoff
-            /*
             try {
                 TimeUnit.MILLISECONDS.sleep(INITIAL_BACKOFF_MILLIS * (long) Math.pow(2, i));
             } catch (InterruptedException ie) {
+                log.warn("Gemini API call interrupted during backoff", ie.getMessage());
                 Thread.currentThread().interrupt();
                 throw new RuntimeException("Gemini API call interrupted during backoff.", ie);
             }
-            // */
         }
         throw new RuntimeException("Failed to get response from Gemini API after retries.");
+    }
+
+    private ObjectNode configRootNode(String prompt) {
+        // Build the request body using Jackson ObjectMapper
+        ObjectNode rootNode = objectMapper.createObjectNode();
+        ArrayNode contentsArray = rootNode.putArray("contents");
+        ObjectNode userPart = contentsArray.addObject();
+        ArrayNode partsArray = userPart.putArray("parts");
+        partsArray.addObject().put("text", prompt);
+        return rootNode;
+    }
+
+    private HttpHeaders configHeaders() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
+        return headers;
     }
 }
 
