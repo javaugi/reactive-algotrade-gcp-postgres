@@ -4,6 +4,7 @@
  */
 package com.sisllc.instaiml;
 
+import static com.sisllc.instaiml.config.AiConfig.OLLAMA_API;
 import com.sisllc.instaiml.config.DatabaseProperties;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +14,11 @@ import org.springframework.boot.ApplicationRunner;
 import org.springframework.core.env.AbstractEnvironment;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.MapPropertySource;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Component
@@ -47,6 +52,24 @@ public class ApplicationRunnerPrinter implements ApplicationRunner {
                 }
             });
 
-        log.debug("Application is ready: \n {}", dbProps);
+        log.info("Application is ready: \n {}", dbProps);
+        healthCheck()
+            .doOnError(e -> log.info("HealthCheck Error", e))
+            .doOnNext(e -> log.info("HealthCheck Success", e))
+            .subscribe();
+        log.info("ApplicationRunnerPrinter Done");
     }
+
+    public Mono<ResponseEntity<String>> healthCheck() {
+        return WebClient.create(OLLAMA_API)
+            .get()
+            .retrieve()
+            .toBodilessEntity()
+            .map(response -> ResponseEntity.ok("Ollama connection OK"))
+            .onErrorResume(e -> Mono.just(
+            ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Ollama connection failed: " + e.getMessage())
+        ));
+    }
+       
 }

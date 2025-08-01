@@ -42,6 +42,7 @@ public class DatabaseProperties {
     private Boolean setupMockUserOnly;
     private Boolean truncateMockData;
     private String databaseUsed;
+    private Boolean skipDataInit;
     
     public static enum ProfileSetting {
         MOCK, PG, PROD

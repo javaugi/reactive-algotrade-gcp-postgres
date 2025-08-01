@@ -9,8 +9,7 @@
 name: Deploy to GCP GKE
 
 on:
-  workflow_dispatch: 
-
+  workflow_dispatch:
 env:
   GCP_PROJECT: your-project-id
   GKE_CLUSTER: espan360-cluster

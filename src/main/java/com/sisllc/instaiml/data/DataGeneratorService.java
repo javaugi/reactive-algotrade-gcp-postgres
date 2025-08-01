@@ -104,38 +104,38 @@ public class DataGeneratorService extends DataGeneratorBase {
     private final TransactionalOperator tx;
 
     public void seedDataUserOnly() {
-        log.info("seedDataUserOnly users count {} ...", this.users.size());
+        log.debug("seedDataUserOnly users count {} ...", this.users.size());
         dbClient = DatabaseClient.create(connFactory);
         generateUsers()
-            .doOnComplete(() -> log.info("generateUsers complete"))
+            .doOnComplete(() -> log.debug("generateUsers complete"))
             .doOnError(e -> log.error("generateUsers error", e))
             .subscribe();
-        log.info("Done seedDataUserOnly users count {}", this.users.size());
+        log.debug("Done seedDataUserOnly users count {}", this.users.size());
     }
 
     public void seedData() {
-        log.info("seedData users count {} ...", this.users.size());
+        log.debug("seedData users count {} ...", this.users.size());
         this.seedDataAll();
         //this.seedDataReactive();
         //this.seedDataByDbClient();
-        log.info("Done seedData prescriptions count {}", this.prescriptions.size());
+        log.debug("Done seedData prescriptions count {}", this.prescriptions.size());
     }
 
     public void seedDataAll() {
-        log.info("seedDataAll entered ... ");
+        log.debug("seedDataAll entered ... ");
         //retrieveAllData();
         retrieveAllDataForDebug();
-        log.info("seedDataAll ... users={}", this.users.size());
+        log.debug("seedDataAll ... users={}", this.users.size());
         
         generateAllData()
             .doOnSuccess(c -> System.out.println("SUCCESS: generateAllData"))
             .doOnError(e -> System.err.println("Error generateAllData " + e.getMessage()))
             .subscribe();
-        log.info("Done seedDataAll prescriptions count {}", this.prescriptions.size(), this.claimsData.size());
+        log.debug("Done seedDataAll prescriptions count {}", this.prescriptions.size(), this.claimsData.size());
     }
     
     public Mono<Void> generateAllData() {
-        log.info("generateAllData entered ... ");
+        log.debug("generateAllData entered ... ");
         return generateUsers()
             .collectList()
             .doOnNext(list -> this.users = list)
@@ -199,7 +199,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .doOnNext(list -> this.prescriptions = list)
                 .doOnError(e -> log.error("generatePrescriptions error", e))
                 .then()) // <- Only runs after all lists populated
-            .doOnSuccess(v -> log.info("All data generation complete prescriptions {} claimsData {}", this.prescriptions.size(), this.claimsData.size()));
+            .doOnSuccess(v -> log.debug("All data generation complete prescriptions {} claimsData {}", this.prescriptions.size(), this.claimsData.size()));
     }   
 
     private <T> T getRandom(List<T> list) {
@@ -210,93 +210,93 @@ public class DataGeneratorService extends DataGeneratorBase {
     }
 
     public void seedDataReactive() {
-        log.info("seedDataReactive ...");
+        log.debug("seedDataReactive ...");
         retrieveAllData();
 
-        log.info("seedData users={}", users.size());
+        log.debug("seedData users={}", users.size());
         generateUsers()
-            .doOnComplete(() -> log.info("generateUsers complete"))
+            .doOnComplete(() -> log.debug("generateUsers complete"))
             .doOnError(e -> log.error("generateUsers error", e))
             .subscribe();
-        log.info("Done seedData users={}", users.size());
+        log.debug("Done seedData users={}", users.size());
 
         generatePharmacies()
-            .doOnComplete(() -> log.info("generatePharmacies complete"))
+            .doOnComplete(() -> log.debug("generatePharmacies complete"))
             .doOnError(e -> log.error("generatePharmacies error", e))
             .subscribe();
 
         generateMedications()
-            .doOnComplete(() -> log.info("generateMedications complete"))
+            .doOnComplete(() -> log.debug("generateMedications complete"))
             .doOnError(e -> log.error("generateMedications error", e))
             .subscribe();
 
         generatePatients()
-            .doOnComplete(() -> log.info("generatePatients complete"))
+            .doOnComplete(() -> log.debug("generatePatients complete"))
             .doOnError(e -> log.error("generatePatients error", e))
             .subscribe();
 
         generatePhysicians()
-            .doOnComplete(() -> log.info("generatePhysicians complete"))
+            .doOnComplete(() -> log.debug("generatePhysicians complete"))
             .doOnError(e -> log.error("generatePhysicians error", e))
             .subscribe();
 
         generateDrugInventory()
-            .doOnComplete(() -> log.info("generateDrugInventory complete"))
+            .doOnComplete(() -> log.debug("generateDrugInventory complete"))
             .doOnError(e -> log.error("generateDrugInventory error", e))
             .subscribe();
 
         generatePrescriptions()
-            .doOnComplete(() -> log.info("generatePrescriptions complete"))
+            .doOnComplete(() -> log.debug("generatePrescriptions complete"))
             .doOnError(e -> log.error("generatePrescriptions error", e))
             .subscribe();
 
-        log.info("seedData insuranceCompanies={}", insuranceCompanies.size());
+        log.debug("seedData insuranceCompanies={}", insuranceCompanies.size());
         generateInsuranceCompanies()
-            .doOnComplete(() -> log.info("generateInsuranceCompanies complete"))
+            .doOnComplete(() -> log.debug("generateInsuranceCompanies complete"))
             .doOnError(e -> log.error("generateInsuranceCompanies error", e))
             .subscribe();
 
         generateInsuranceProviders()
-            .doOnComplete(() -> log.info("generateInsuranceProviders complete"))
+            .doOnComplete(() -> log.debug("generateInsuranceProviders complete"))
             .doOnError(e -> log.error("generateInsuranceProviders error", e))
             .subscribe();
 
         generateInsurancePlans()
-            .doOnComplete(() -> log.info("generateUsers complete"))
+            .doOnComplete(() -> log.debug("generateUsers complete"))
             .doOnError(e -> log.error("generateUsers error", e))
             .subscribe();
 
         generateMembers()
-            .doOnComplete(() -> log.info("generateMembers complete"))
+            .doOnComplete(() -> log.debug("generateMembers complete"))
             .doOnError(e -> log.error("generateMembers error", e))
             .subscribe();
 
         generatePatientMembers()
-            .doOnComplete(() -> log.info("generatePatientMembers complete"))
+            .doOnComplete(() -> log.debug("generatePatientMembers complete"))
             .doOnError(e -> log.error("generatePatientMembers error", e))
             .subscribe();
 
         generatePlanPricings()
-            .doOnComplete(() -> log.info("generatePlanPricings complete"))
+            .doOnComplete(() -> log.debug("generatePlanPricings complete"))
             .doOnError(e -> log.error("generatePlanPricings error", e))
             .subscribe();
 
         generateGeographicPricings()
-            .doOnComplete(() -> log.info("generateGeographicPricings complete"))
+            .doOnComplete(() -> log.debug("generateGeographicPricings complete"))
             .doOnError(e -> log.error("generateGeographicPricings error", e))
             .subscribe();
 
         generateCoverageDetails()
-            .doOnComplete(() -> log.info("generateCoverageDetails complete"))
+            .doOnComplete(() -> log.debug("generateCoverageDetails complete"))
             .doOnError(e -> log.error("generateCoverageDetails error", e))
             .subscribe();
 
         generateClaimsData()
-            .doOnComplete(() -> log.info("generateClaimsData complete"))
+            .doOnComplete(() -> log.debug("generateClaimsData complete"))
             .doOnError(e -> log.error("generateClaimsData error", e))
             .subscribe();
 
-        log.info("Done seedData patients count={}", patients.size());
+        log.debug("Done seedData patients count={}", patients.size());
     }
 
     public void retrieveAllData() {
@@ -393,7 +393,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.users = saved;
-                    log.info("User {}", saved.size());
+                    log.debug("User {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -411,7 +411,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.pharmacies = saved;
-                    log.info("Pharmacy {}", saved.size());
+                    log.debug("Pharmacy {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -429,7 +429,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.medications = saved;
-                    log.info("Medication {}", saved.size());
+                    log.debug("Medication {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -447,7 +447,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.patients = saved;
-                    log.info("Patient {}", saved.size());
+                    log.debug("Patient {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -465,7 +465,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.physicians = saved;
-                    log.info("Physician {}", saved.size());
+                    log.debug("Physician {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -487,7 +487,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.drugInventories = saved;
-                    log.info("DrugInventory {}", saved.size());
+                    log.debug("DrugInventory {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -512,7 +512,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.prescriptions = saved;
-                    log.info("Prescription {}", saved.size());
+                    log.debug("Prescription {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -532,7 +532,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.insuranceCompanies = saved;
-                    log.info("InsuranceCompany {}", saved.size());
+                    log.debug("InsuranceCompany {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -552,7 +552,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.insuranceProviders = saved;
-                    log.info("InsuranceProvider {}", saved.size());
+                    log.debug("InsuranceProvider {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -573,7 +573,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.insurancePlans = saved;
-                    log.info("InsurancePlan {}", saved.size());
+                    log.debug("InsurancePlan {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -594,7 +594,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.members = saved;
-                    log.info("Member {}", saved.size());
+                    log.debug("Member {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -616,7 +616,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.patientMembers = saved;
-                    log.info("PatientMember {}", saved.size());
+                    log.debug("PatientMember {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -637,7 +637,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.planPricings = saved;
-                    log.info("PlanPricing {}", saved.size());
+                    log.debug("PlanPricing {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -658,7 +658,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.geographicPricings = saved;
-                    log.info("GeographicPricing {}", saved.size());
+                    log.debug("GeographicPricing {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -679,7 +679,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.coverageDetails = saved;
-                    log.info("CoverageDetail {}", saved.size());
+                    log.debug("CoverageDetail {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -702,7 +702,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 .collectList()
                 .doOnSuccess(saved -> {
                     this.claimsData = saved;
-                    log.info("ClaimsData {}", saved.size());
+                    log.debug("ClaimsData {}", saved.size());
                 })
                 .flatMapMany(Flux::fromIterable)
         );
@@ -712,7 +712,7 @@ public class DataGeneratorService extends DataGeneratorBase {
         dbClient = DatabaseClient.create(connFactory);
         this.retrieveAllDataForDebug();
 
-        log.info("seedDataByDbClient users {}", this.users.size());
+        log.debug("seedDataByDbClient users {}", this.users.size());
         generateUsersByDbClient();
         generatePharmaciesByDbClient();
         generateMedicationsByDbClient();
@@ -729,7 +729,7 @@ public class DataGeneratorService extends DataGeneratorBase {
         generateGeographicPricingsByDbClient();
         generateCoverageDetailsByDbClient();
         generateClaimsDataByDbClient();
-        log.info("Done seedDataByDbClient users {} claimsData {}", this.users.size(), this.claimsData.size());
+        log.debug("Done seedDataByDbClient users {} claimsData {}", this.users.size(), this.claimsData.size());
     }
 
     private void generateUsersByDbClient() {
@@ -738,7 +738,7 @@ public class DataGeneratorService extends DataGeneratorBase {
                 -> UserGenerator.generate(dbClient, getUPWD(i), passwordEncoder)
             )
             .collect(Collectors.toList());
-        log.info("generateUsers DONE {}", users.size());
+        log.debug("generateUsers DONE {}", users.size());
     }
 
     private void generatePharmaciesByDbClient() {

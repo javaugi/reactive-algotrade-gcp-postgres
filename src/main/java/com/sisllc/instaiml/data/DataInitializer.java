@@ -5,7 +5,6 @@
 package com.sisllc.instaiml.data;
 
 import com.sisllc.instaiml.config.DatabaseProperties;
-import com.sisllc.instaiml.config.DatabaseProperties.ProfileSetting;
 import com.sisllc.instaiml.service.InsurancePricingAnalyticalService;
 import io.r2dbc.spi.ConnectionFactory;
 import java.io.IOException;
@@ -38,22 +37,26 @@ public class DataInitializer implements ApplicationRunner{
     
     @Override
     public void run(ApplicationArguments args) {
+        log.debug("DataInitializer Spring Boot {} skipDataInit {} database {}", SpringBootVersion.getVersion(), dbProps.getSkipDataInit(), dbProps.getDatabaseUsed());
+        if (dbProps.getSkipDataInit()) {
+            return;
+        }
+
         dbClient = DatabaseClient.create(connFactory);        
         this.databaseUsed = dbProps.getDatabaseUsed();
-        log.info("DataInitializer Spring Boot {} database {}", SpringBootVersion.getVersion(), this.databaseUsed);  
-        
-        log.info("createTables ... ");  
+
+        log.debug("createTables ... ");  
         createTables();
-        log.info("Done createTables ");  
+        log.debug("Done createTables ");  
 
         if (dbProps.getSetupMockUserOnly()) {
             dataGenService.seedDataUserOnly();
         } else {
             dataGenService.seedData();
         }
-        log.info("Done seedData ");  
+        log.debug("Done seedData ");  
         anylyticalService.performAnalytics();
-        log.info("Done all DataInitializer Spring Boot {} database {}", SpringBootVersion.getVersion(), this.databaseUsed);  
+        log.debug("Done all DataInitializer Spring Boot {} database {}", SpringBootVersion.getVersion(), this.databaseUsed);  
     }
     
     protected void createTables() {

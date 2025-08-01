@@ -18,32 +18,32 @@ public class InsurancePricingAnalyticalService {
     private final InsurancePricingRepository insurancePricingRepository;
     
     public void performAnalytics() {
-        log.info("performAnalytics entered ... ");
+        log.debug("performAnalytics entered ... ");
         doPremiumVsAgeAnalysis();
-        log.info("premiumVsAgeAnalysis Done ");
+        log.debug("premiumVsAgeAnalysis Done ");
         doPremiumByPlanTypeTierAnalysis();
-        log.info("premiumByPlanTypeTierAnalysis Done.");
+        log.debug("premiumByPlanTypeTierAnalysis Done.");
         doCostVsCoverageAnalysis();
-        log.info("costVsCoverageAnalysis Done.");
+        log.debug("costVsCoverageAnalysis Done.");
         doTobaccoSurchargeImpactAnalysis();
-        log.info("tobaccoSurchargeImpactAnalysis Done.");
+        log.debug("tobaccoSurchargeImpactAnalysis Done.");
         doMarketBenchmarkingAnalysis();
-        log.info("marketBenchmarkingAnalysis Done.");
+        log.debug("marketBenchmarkingAnalysis Done.");
         doRiskPoolAnalysis();
-        log.info("riskPoolAnalysis Done");
+        log.debug("riskPoolAnalysis Done");
         doNetworkAdequacyImpactAnalysis();
-        log.info("doNetworkAdequacyImpactAnalysis Done");
+        log.debug("doNetworkAdequacyImpactAnalysis Done");
 
-        log.info("##### doPremiumVsAgeSimpleAnalysis ...");
+        log.debug("##### doPremiumVsAgeSimpleAnalysis ...");
         doPremiumVsAgeSimpleAnalysis();
-        log.info("All Done performAnalytics after networkAdequacyImpactAnalysis");
+        log.debug("All Done performAnalytics after networkAdequacyImpactAnalysis");
     }
     
     private void doPremiumVsAgeSimpleAnalysis() {
         try{
             premiumVsAgeSimpleAnalysis()
-                .doOnNext(dto -> log.info("premiumVsAgeSimpleAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("premiumVsAgeSimpleAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("premiumVsAgeSimpleAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("premiumVsAgeSimpleAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error premiumVsAgeSimpleAnalysis", ex);
@@ -58,8 +58,8 @@ public class InsurancePricingAnalyticalService {
     private void doPremiumVsAgeAnalysis() {
         try{
             premiumVsAgeAnalysis()
-                .doOnNext(dto -> log.info("premiumVsAgeAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("premiumVsAgeAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("premiumVsAgeAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("premiumVsAgeAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error premiumVsAgeAnalysis", ex);
@@ -74,8 +74,8 @@ public class InsurancePricingAnalyticalService {
     private void doPremiumByPlanTypeTierAnalysis() {
         try{
             premiumByPlanTypeTierAnalysis()
-                .doOnNext(dto -> log.info("premiumByPlanTypeTierAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("premiumByPlanTypeTierAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("premiumByPlanTypeTierAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("premiumByPlanTypeTierAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error premiumByPlanTypeTierAnalysis", ex);
@@ -89,8 +89,8 @@ public class InsurancePricingAnalyticalService {
     private void doCostVsCoverageAnalysis() {
         try{
             premiumByPlanTypeTierAnalysis()
-                .doOnNext(dto -> log.info("costVsCoverageAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("costVsCoverageAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("costVsCoverageAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("costVsCoverageAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error costVsCoverageAnalysis", ex);
@@ -104,8 +104,8 @@ public class InsurancePricingAnalyticalService {
     private void doTobaccoSurchargeImpactAnalysis() {
         try{
             tobaccoSurchargeImpactAnalysis()
-                .doOnNext(dto -> log.info("tobaccoSurchargeImpactAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("tobaccoSurchargeImpactAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("tobaccoSurchargeImpactAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("tobaccoSurchargeImpactAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error tobaccoSurchargeImpactAnalysis", ex);
@@ -119,8 +119,8 @@ public class InsurancePricingAnalyticalService {
     private void doMarketBenchmarkingAnalysis() {
         try{
             insurancePricingRepository.marketBenchmarkingAnalysis()
-                .doOnNext(dto -> log.info("marketBenchmarkingAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("marketBenchmarkingAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("marketBenchmarkingAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("marketBenchmarkingAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error marketBenchmarkingAnalysis", ex);
@@ -134,8 +134,8 @@ public class InsurancePricingAnalyticalService {
     private void doRiskPoolAnalysis() {
         try{
             insurancePricingRepository.riskPoolAnalysis()
-                .doOnNext(dto -> log.info("riskPoolAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("riskPoolAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("riskPoolAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("riskPoolAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error riskPoolAnalysis", ex);
@@ -149,8 +149,8 @@ public class InsurancePricingAnalyticalService {
     private void doNetworkAdequacyImpactAnalysis() {
         try{
             networkAdequacyImpactAnalysis()
-                .doOnNext(dto -> log.info("networkAdequacyImpactAnalysis {}", dto))
-                .switchIfEmpty(dto -> log.info("networkAdequacyImpactAnalysis: No Data Found"))
+                .doOnNext(dto -> log.debug("networkAdequacyImpactAnalysis {}", dto))
+                .switchIfEmpty(dto -> log.debug("networkAdequacyImpactAnalysis: No Data Found"))
                 .subscribe();
         }catch(Exception ex) {
             log.error(" Error premiumByPlanTypeTierAnalysis", ex);

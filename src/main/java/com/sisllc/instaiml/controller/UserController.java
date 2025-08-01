@@ -35,7 +35,7 @@ public class UserController {
 
     @PostMapping
     public Mono<ResponseEntity<User>> addUser(@RequestBody User user) {
-        log.info("addUser {}", user);
+        log.debug("addUser {}", user);
         return userService.save(user)
             .map(savedUser -> ResponseEntity.status(HttpStatus.CREATED).body(savedUser))
             // Optionally handle errors:
@@ -48,7 +48,7 @@ public class UserController {
     // Create new user
     @PostMapping(value = "/create", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<User>> createUser(@RequestBody UserDto userDto) {
-        log.info("createUser {}", userDto);
+        log.debug("createUser {}", userDto);
         return userService.saveUser(userDto)
             .map(savedUser -> ResponseEntity.status(HttpStatus.CREATED).body(savedUser))
             // Optionally handle errors:
@@ -60,14 +60,14 @@ public class UserController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public Flux<User> getAllUsers() {
-        log.info("getAllUsers ");
+        log.debug("getAllUsers ");
         return userService.getAllUsers()
             .limitRate(20);
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<User>> getUserById(@PathVariable("id") String id) {
-        log.info("getUserById id {}", id);
+        log.debug("getUserById id {}", id);
         return userService.getUserById(id)
             .map(ResponseEntity::ok)
             .defaultIfEmpty(ResponseEntity.notFound().build())
@@ -78,7 +78,7 @@ public class UserController {
 
     @GetMapping(value = "/user-ids", produces = MediaType.APPLICATION_JSON_VALUE)
     public Mono<ResponseEntity<List<String>>> getUserIds(@PathVariable("id") String ids) {
-        log.info("getUserIds id {}", ids);
+        log.debug("getUserIds id {}", ids);
         return userService.getUserIds()
             .map(ResponseEntity::ok)
             .onErrorResume(Exception.class, ex -> {
@@ -89,15 +89,15 @@ public class UserController {
     @PutMapping("/{id}")
     public Mono<ResponseEntity<User>> updateUser(@PathVariable String id, @Valid @RequestBody UserDto userDto,
         @RequestHeader(value = "Authorization", required = false) String authHeader) {
-        log.info("Received PUT request for user ID: {} with data: {}, Authorization header: {}", id, userDto, authHeader);
+        log.debug("Received PUT request for user ID: {} with data: {}, Authorization header: {}", id, userDto, authHeader);
 
         return userService.updateUser(id, userDto)
             .map(updatedUser -> {
-                log.info("Successfully updateUser: {}", updatedUser);
+                log.debug("Successfully updateUser: {}", updatedUser);
                 return ResponseEntity.ok(updatedUser);
             })
             .switchIfEmpty(Mono.just("dummy")
-                .doOnNext(dummy -> log.info("Error updateUser dummy {}", dummy))
+                .doOnNext(dummy -> log.debug("Error updateUser dummy {}", dummy))
                 .then(Mono.empty())
             )
             .doOnError(e -> log.error("Error updating user: {}", e.getMessage()));
@@ -105,7 +105,7 @@ public class UserController {
 
     @DeleteMapping("/{id}")
     public Mono<ResponseEntity<Object>> deleteUserById(@PathVariable("id") String id) {
-        log.info("deleteUserById id {}", id);
+        log.debug("deleteUserById id {}", id);
         return userService.deleteUserById(id)
             .then(Mono.just(ResponseEntity.noContent().build()))
             .onErrorResume(UserNotFoundException.class, ex

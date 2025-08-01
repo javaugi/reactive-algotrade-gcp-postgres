@@ -77,7 +77,8 @@ public class JwtAuthFilter implements WebFilter {
     }
 
     private boolean pathSpecial(String path) {
-        if (path.startsWith("/logo") || path.startsWith("/api/user") || path.startsWith("/api/auth") ||
+        if (path.startsWith("/logo") || path.startsWith("/api/")
+            || //path.startsWith("/api/user") || path.startsWith("/api/auth") ||
             path.startsWith("/public") || path.startsWith("/static/") || path.startsWith("/index") || 
             path.startsWith("/service") || path.startsWith("/manifest") || path.startsWith("/favicon") || 
             path.startsWith("/asset-manifest")) {

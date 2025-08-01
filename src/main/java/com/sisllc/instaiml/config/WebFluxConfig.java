@@ -17,7 +17,7 @@ public class WebFluxConfig implements WebFluxConfigurer {
     
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        log.info("WebFluxConfigurer addResourceHandlers");
+        log.debug("WebFluxConfigurer addResourceHandlers");
         registry.addResourceHandler("/static/**")
             .addResourceLocations("classpath:/static/static/"); // Note the nested 'static/'
         registry.addResourceHandler("/*.js")

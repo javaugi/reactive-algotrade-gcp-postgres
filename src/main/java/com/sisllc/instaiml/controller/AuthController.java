@@ -11,11 +11,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.ReactiveAuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -38,7 +35,7 @@ public class AuthController {
     
     @GetMapping("/me")
     public Mono<Map<String, Object>> getCurrentUser(@AuthenticationPrincipal UserDetails userDetails) {
-        log.info("AuthController getCurrentUser {}", userDetails);
+        log.debug("AuthController getCurrentUser {}", userDetails);
         if (userDetails == null) {
             return Mono.empty(); // Or return 401 if no user is authenticated
         }
@@ -53,7 +50,7 @@ public class AuthController {
     
     @PostMapping("/login")
     public Mono<ResponseEntity<LoginResponse>> login(@RequestBody LoginRequest request) {
-        log.info("AuthController login {}", request);       
+        log.debug("AuthController login {}", request);       
         return Mono.just(ResponseEntity.ok(new LoginResponse("login done")));
         /*
         return authenticationManager.authenticate(
@@ -69,7 +66,7 @@ public class AuthController {
 
     @PostMapping("/logout")
     public Mono<ResponseEntity<String>> logout() {
-        log.info("AuthController logout ");       
+        log.debug("AuthController logout ");       
         return ReactiveSecurityContextHolder.getContext()
         .flatMap(securityContext -> {
             ReactiveSecurityContextHolder.clearContext();

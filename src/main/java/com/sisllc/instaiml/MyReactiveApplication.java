@@ -50,7 +50,7 @@ public class MyReactiveApplication implements EnvironmentAware {
 			String[] beanNames = ctx.getBeanDefinitionNames();
 			Arrays.sort(beanNames);
 			for (String beanName : beanNames) {
-				log.info(beanName);
+                log.debug(beanName);
 			}
 			log.debug("MyReactiveApplication commandLineRunner Server is ready: Spring Boot {}", SpringBootVersion.getVersion());            
 		};

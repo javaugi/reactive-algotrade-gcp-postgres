@@ -42,7 +42,7 @@ public class DatabaseConfig {
     
     @PostConstruct
     public void init() {
-        log.info("DatabaseConfig profiles {}", Arrays.toString(env.getActiveProfiles()));
+        log.debug("DatabaseConfig profiles {}", Arrays.toString(env.getActiveProfiles()));
         if (env.getActiveProfiles() == null || env.getActiveProfiles().length == 0 ||
             env.acceptsProfiles(ProfileMockConfig.MOCK_PROFILES)) {
            profileSetting = ProfileSetting.MOCK;
@@ -53,7 +53,7 @@ public class DatabaseConfig {
         }
         
         dbProps.setupBaseDbProps(profileSetting);
-        log.info("DatabaseConfig props {}", dbProps);
+        log.debug("DatabaseConfig props {}", dbProps);
     }
     
     @Bean
