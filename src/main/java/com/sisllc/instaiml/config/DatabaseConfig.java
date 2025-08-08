@@ -9,9 +9,7 @@ import io.r2dbc.pool.ConnectionPool;
 import io.r2dbc.pool.ConnectionPoolConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionConfiguration;
 import io.r2dbc.postgresql.PostgresqlConnectionFactory;
-import io.r2dbc.spi.ConnectionFactories;
 import io.r2dbc.spi.ConnectionFactory;
-import io.r2dbc.spi.ConnectionFactoryOptions;
 import jakarta.annotation.PostConstruct;
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
@@ -58,6 +56,25 @@ public class DatabaseConfig {
     
     @Bean
     public ConnectionFactory connectionFactory() {
+        log.debug("connectionFactory profiles {} propd {}", Arrays.toString(env.getActiveProfiles()), dbProps);
+
+        PostgresqlConnectionFactory baseFactory = new PostgresqlConnectionFactory(
+            PostgresqlConnectionConfiguration.builder()
+                .host(dbProps.getHost())
+                .port(Integer.parseInt(dbProps.getPort()))
+                .database(dbProps.getDatabase())
+                .username(dbProps.getUsername())
+                .password(dbProps.getPassword())
+                .build()
+        );
+
+        return new ConnectionPool(ConnectionPoolConfiguration.builder(baseFactory)
+            .initialSize(dbProps.getPoolInitialSize())
+            .maxSize(dbProps.getPoolMaxSize())
+            .build()
+        );
+
+        /*
         if (profileSetting == ProfileSetting.PROD) {
             PostgresqlConnectionFactory baseFactory = new PostgresqlConnectionFactory(
                 PostgresqlConnectionConfiguration.builder()
@@ -91,10 +108,12 @@ public class DatabaseConfig {
             .option(ConnectionFactoryOptions.PASSWORD, dbProps.getPgPassword())
             .build();
         return ConnectionFactories.get(options);
+        // */
     }
     
     @Bean
     public R2dbcEntityTemplate r2dbcEntityTemplate(ConnectionFactory connectionFactory) {
+        log.debug("r2dbcEntityTemplate profiles {} propd {}", Arrays.toString(env.getActiveProfiles()), dbProps);
         return new R2dbcEntityTemplate(connectionFactory);
     }
 }

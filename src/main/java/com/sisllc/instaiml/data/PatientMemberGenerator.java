@@ -4,7 +4,6 @@
  */
 package com.sisllc.instaiml.data;
 
-import static com.sisllc.instaiml.data.PatientGenerator.insert;
 import com.sisllc.instaiml.model.PatientMember;
 import java.util.UUID;
 import lombok.extern.slf4j.Slf4j;
@@ -25,13 +24,8 @@ public class PatientMemberGenerator extends DataGeneratorBase {
     }    
 
     public static PatientMember generate(DatabaseClient dbClient, String patientId, String memberId) {
-        PatientMember patientMember = PatientMember.builder()
-            .id(UUID.randomUUID().toString())
-            .patientId(patientId)
-            .memberId(memberId)
-            .build();
-        
-        log.trace("patientMember {}", insert(dbClient, patientMember).subscribe());     
+        PatientMember patientMember = generate(patientId, memberId);
+        log.trace("patientMember {}", insert(dbClient, patientMember).subscribe());
         return patientMember;
     }    
     

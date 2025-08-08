@@ -38,12 +38,24 @@ public class DatabaseProperties {
     private String prodDatabase;
     
     private ProfileSetting profileSetting;
-    private String ddlSchemaDir;
     private Boolean setupMockUserOnly;
     private Boolean truncateMockData;
-    private String databaseUsed;
     private Boolean skipDataInit;
-    
+    private String databaseUsed;
+
+    private String url;
+    private String username;
+    private String password;
+    private String host;
+    private String port;
+    private String database;
+    private String ddlSchemaDir;
+
+    private Integer poolInitialSize = 8;
+    private Integer poolMaxSize = 20;
+    private Integer poolMinSize = 5;
+    private Integer connTimeout = 2000;
+
     public static enum ProfileSetting {
         MOCK, PG, PROD
     }
@@ -53,16 +65,34 @@ public class DatabaseProperties {
         
         switch(profileSetting) {
             case ProfileSetting.PROD -> {
-                ddlSchemaDir = prodDdlSchemaDir;
-                databaseUsed = this.prodDatabase;
+                this.url = this.prodUrl;
+                this.host = this.prodHost;
+                this.port = this.prodPort;
+                this.username = this.prodUsername;
+                this.password = this.prodPassword;
+                this.database = this.prodDatabase;
+                this.databaseUsed = this.prodDatabase;
+                this.ddlSchemaDir = this.prodDdlSchemaDir;
             }
             case ProfileSetting.MOCK -> {
-                ddlSchemaDir = mockDdlSchemaDir;
-                databaseUsed = this.mockDatabase;               
+                this.url = this.mockUrl;
+                this.host = this.mockHost;
+                this.port = this.mockPort;
+                this.username = this.mockUsername;
+                this.password = this.mockPassword;
+                this.database = this.mockDatabase;
+                this.databaseUsed = this.mockDatabase;
+                this.ddlSchemaDir = this.mockDdlSchemaDir;
             }
             default -> {
-                ddlSchemaDir = pgDdlSchemaDir;
-                databaseUsed = this.pgDatabase;                
+                this.url = this.pgUrl;
+                this.host = this.pgHost;
+                this.port = this.pgPort;
+                this.username = this.pgUsername;
+                this.password = this.pgPassword;
+                this.database = this.pgDatabase;
+                this.databaseUsed = this.pgDatabase;
+                this.ddlSchemaDir = this.pgDdlSchemaDir;
             }
         }
     }

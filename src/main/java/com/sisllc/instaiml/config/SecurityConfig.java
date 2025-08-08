@@ -21,14 +21,14 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.server.SecurityWebFilterChain;
-import reactor.core.publisher.Mono;
-import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.reactive.CorsWebFilter;
 import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.reactive.function.server.RequestPredicates;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import reactor.core.publisher.Mono;
 
 @Slf4j
 @Configuration
@@ -136,7 +136,7 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         log.info("passwordEncoder ...");
-        return new BCryptPasswordEncoder();
+        return new BCryptPasswordEncoder(12);  // Strength factor 12-31
     }
 
     @Bean
@@ -146,7 +146,7 @@ public class SecurityConfig {
 
         // Specific allowed origins (better than "*" for security)
         corsConfig.addAllowedOrigin("http://localhost:3000"); // React default port
-        corsConfig.addAllowedOrigin("http://localhost:8088"); // Your React app port
+        corsConfig.addAllowedOrigin("http://localhost:8080"); // Your React app port
 
         // Allow all methods (GET, POST, etc.) and headers
         corsConfig.addAllowedMethod("*"); // Allow all HTTP methods (GET, POST, etc.)
@@ -163,11 +163,11 @@ public class SecurityConfig {
 }
 
 /*
-curl -X POST http://localhost:8088/api/auth/login \
+curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"MyAdmin1@1","password":"MyAdmin1@1"}'
 
-curl -X POST http://localhost:8088/api/auth/login \
+curl -X POST http://localhost:8080/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"username":"MyAdmin1@1","password":"$2a$10$ley68e7CCJpduPSNPWl05OUa8IGHyr04MzY9pvq2vo3QXBjaG6Jk6"}'
 

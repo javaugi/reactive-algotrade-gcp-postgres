@@ -34,6 +34,7 @@ const EditUserForm = props => {
       <button onClick={() => props.setEditing(false)} className="button muted-button">
         Cancel
       </button>
+      <div role="button" tabindex="0" onKeyDown="alert('Alert')">Alert</div>
     </form>
   );
 };

@@ -31,18 +31,8 @@ public class MemberGenerator extends DataGeneratorBase {
     }    
     
     public static Member generate(DatabaseClient dbClient, String insurancePlanId) {
-        Member member = Member.builder()
-            .id(UUID.randomUUID().toString())
-            .insurancePlanId(insurancePlanId)
-            .name(JAVA_FAKER.name().fullName())
-            .gender(JAVA_FAKER.demographic().sex())
-            .tobaccoUser(JAVA_FAKER.bool().bool())
-            .birthDate(NET_FAKER.date().birthday(20, 90).toInstant().atOffset(ZoneOffset.UTC))
-            .enrollmentDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .terminationDate(JAVA_FAKER.date().future(JAVA_FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
-        log.trace("member {}", insert(dbClient, member).subscribe());     
+        Member member = generate(insurancePlanId);
+        log.trace("member {}", insert(dbClient, member).subscribe());
         return member;
     }    
     

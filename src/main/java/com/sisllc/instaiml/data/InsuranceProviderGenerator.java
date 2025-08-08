@@ -25,14 +25,8 @@ public class InsuranceProviderGenerator extends DataGeneratorBase {
     }    
     
     public static InsuranceProvider generate(DatabaseClient dbClient) {
-        InsuranceProvider insuranceProvider = InsuranceProvider.builder()
-            .id(UUID.randomUUID().toString())
-            .providerName(JAVA_FAKER.company().name())
-            .specialty(NET_FAKER.company().name())
-            .networkStatus(NET_FAKER.options().option("In-Network", "Out-of-Network"))
-            .build();
-        
-        log.trace("insuranceProvider {}", insert(dbClient, insuranceProvider).subscribe());     
+        InsuranceProvider insuranceProvider = generate();
+        log.trace("insuranceProvider {}", insert(dbClient, insuranceProvider).subscribe());
         return insuranceProvider;
     }    
     

@@ -37,6 +37,7 @@ public class GeminiApiService {
     // Inject the RestTemplate configured for secure communication
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper; // For JSON processing
+    private final WebClient webClient;
 
     // In a real application, the API key would be loaded from properties or Secrets Manager
     // For Canvas environment, it's often handled automatically if left empty in the JS fetch call.
@@ -52,9 +53,10 @@ public class GeminiApiService {
 
     // Constructor to inject WebClient and ObjectMapper
     public GeminiApiService(@Qualifier(AiConfig.REST_TEMPLATE) RestTemplate restTemplate,
-        WebClient.Builder webClientBuilder, ObjectMapper objectMapper) {
+        WebClient.Builder webClientBuilder, ObjectMapper objectMapper, WebClient webClient) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.webClient = webClient;
     }
 
     /**

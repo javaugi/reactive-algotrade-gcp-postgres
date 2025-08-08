@@ -29,17 +29,8 @@ public class InsuranceCompanyGenerator extends DataGeneratorBase {
     }    
     
     public static InsuranceCompany generate(DatabaseClient dbClient) {
-        InsuranceCompany insuranceCompany = InsuranceCompany.builder()
-            .id(UUID.randomUUID().toString())
-            .companyCode("CC-" + JAVA_FAKER.number().digits(6))
-            .companyName(JAVA_FAKER.company().name())
-            .stateLicenses("LIC-" + JAVA_FAKER.number().digits(6))
-            .financialRating("RATE-" + NET_FAKER.financialTerms().noun())
-            .contactInfo(NET_FAKER.address().fullAddress())
-            .marketShare(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 0, 1)))
-            .build();
-        
-        log.trace("insuranceCompany {}", insert(dbClient, insuranceCompany).subscribe());     
+        InsuranceCompany insuranceCompany = generate();
+        log.trace("insuranceCompany {}", insert(dbClient, insuranceCompany).subscribe());
         return insuranceCompany;
     }    
     

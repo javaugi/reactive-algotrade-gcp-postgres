@@ -9,9 +9,11 @@ import com.sisllc.instaiml.repository.PrescriptionRepository;
 import com.sisllc.instaiml.service.PrescriptionService;
 import java.time.OffsetDateTime;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.reactive.TransactionalOperator;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -24,13 +26,30 @@ import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/prescription")
 public class PrescriptionController {
 
+    /*
+    ◦ Purpose of @Transactional: It defines the scope of a single database transaction. All operations within a @Transactional method
+        either commit together or roll back together if an exception occurs. It's crucial for maintaining data consistency.
+    ◦ Challenges in Reactive (R2DBC) Context:
+        ▪ Thread-Bound Nature (JPA/JDBC): Traditional @Transactional relies on ThreadLocal for managing connections and transactions,
+            which is inherently blocking and doesn't fit the non-blocking, asynchronous nature of reactive programming. Reactive streams
+            can switch threads multiple times within an operation.
+        ▪ Spring Boot's Reactive Transaction Management: Spring Boot provides specific reactive transaction management (e.g., R2dbcTransactionManager)
+            which works with ReactiveTransactionManager and requires the TransactionalOperator or TransactionalOperator.execute for explicit
+            transactional boundaries within reactive chains. Simply putting @Transactional on a method that returns a Mono or Flux might work in
+            simple cases due to Spring's reactive transaction synchronization, but it's not always robust for complex reactive flows.
+        ▪ Explicit TransactionalOperator: For more control and reliability in complex reactive scenarios, you typically inject TransactionalOperator
+            and wrap your reactive chain:
+     */
+
     private final PrescriptionService prescriptionService;
     private final PrescriptionRepository prescriptionRepository;
+    private final TransactionalOperator transactionalOperator;
 
     @GetMapping
     public Flux<Prescription> getAllPrescriptions() {
@@ -52,6 +71,21 @@ public class PrescriptionController {
     @Transactional
     public Mono<Prescription> create(@RequestBody Prescription prescription) {
         return prescriptionRepository.save(prescription);
+    }
+
+    @PostMapping("/createtrans")
+    @Transactional
+    public Mono<Prescription> createInTransaction(Prescription entity) {
+        //status is a ReactiveTransactionStatus
+        return transactionalOperator
+            .execute(status -> prescriptionRepository.save(entity)
+            .flatMap(savedEntity -> {
+            // Potentially other reactive operations that need to be part of the same transaction
+            log.info("saving in trans ...");
+            return Mono.just(savedEntity);
+                })
+                .doOnError(e -> status.setRollbackOnly()) // You can explicitly mark for rollback
+        ).next(); // Execute returns a Flux, use .next() for a single result
     }
 
     @PatchMapping("/{id}/status")

@@ -31,18 +31,8 @@ public class PhysicianGenerator extends DataGeneratorBase {
     }    
     
     public static Physician generate(DatabaseClient dbClient) {
-        Physician physician = Physician.builder()
-            .id(UUID.randomUUID().toString())
-            .name(JAVA_FAKER.name().fullName())
-            .specialty(MED_SPECIALTIES.get(rand.nextInt(MED_SPECIALTIES.size())))
-            .email(JAVA_FAKER.internet().emailAddress())
-            .phone(JAVA_FAKER.phoneNumber().phoneNumber())
-            .address(JAVA_FAKER.address().fullAddress())
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
-        log.trace("physician {}", insert(dbClient, physician).subscribe());     
+        Physician physician = generate();
+        log.trace("physician {}", insert(dbClient, physician).subscribe());
         return physician;
     }    
     

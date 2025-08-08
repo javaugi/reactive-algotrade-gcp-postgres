@@ -6,6 +6,7 @@ package com.sisllc.instaiml.security;
 
 import com.sisllc.instaiml.util.JwtUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.security.core.Authentication;
@@ -21,12 +22,8 @@ import reactor.core.publisher.Mono;
 @Component
 public class JwtAuthFilter implements WebFilter {
 
-    private final JwtUtils jwtUtils;
-
-    public JwtAuthFilter(JwtUtils jwtUtils) {
-        log.info("JwtAuthFilter constructor ...");
-        this.jwtUtils = jwtUtils;
-    }
+    @Autowired
+    private JwtUtils jwtUtils;
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {

@@ -35,20 +35,8 @@ public class GeographicPricingGenerator extends DataGeneratorBase {
     }   
        
     public static GeographicPricing generate(DatabaseClient dbClient, String insurancePlanId) {
-        String state = getStateAbbr();
-        String zipCode = getZipCodeByStateAbbr(state);
-        
-        GeographicPricing geographicPricing = GeographicPricing.builder()
-            .id(UUID.randomUUID().toString())
-            .insurancePlanId(insurancePlanId)
-            .zipCode(zipCode)
-            .stateAbbr(state)
-            .adjustmentFactor(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 1, 5)))
-            .ratingArea(JAVA_FAKER.number().numberBetween(1, 5))
-            .effectiveDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .expirationDate(JAVA_FAKER.date().future(JAVA_FAKER.number().numberBetween(100, 300), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
+        GeographicPricing geographicPricing = generate(insurancePlanId);
+
         log.trace("geographicPricing {}", insert(dbClient, geographicPricing).subscribe());                
         return geographicPricing;
     }   

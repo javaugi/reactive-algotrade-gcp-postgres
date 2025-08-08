@@ -34,21 +34,8 @@ public class InsurancePlanGenerator extends DataGeneratorBase {
     }    
     
     public static InsurancePlan generate(DatabaseClient dbClient, String insuranceCompanyId) {
-        InsurancePlan insurancePlan = InsurancePlan.builder()
-            .id(UUID.randomUUID().toString())
-            .insuranceCompanyId(insuranceCompanyId)
-            .planName("PLAN-NAME-" + JAVA_FAKER.number().digits(6))
-            .planType(NET_FAKER.options().option("HMO", "PPO", "EPO", "POS", "HDHP"))
-            .networkType(NET_FAKER.options().option("In-Network", "Out-of-Network"))
-            .tierLevel(NET_FAKER.options().option("Bronze", "Silver", "Gold", "Platinum", "Catastrophic"))
-            .active(JAVA_FAKER.bool().bool())
-            .effectiveDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .expirationDate(JAVA_FAKER.date().future(JAVA_FAKER.number().numberBetween(100, 300), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
-        log.trace("insurancePlan {}", insert(dbClient, insurancePlan).subscribe());     
+        InsurancePlan insurancePlan = generate(insuranceCompanyId);
+        log.trace("insurancePlan {}", insert(dbClient, insurancePlan).subscribe());
         return insurancePlan;
     }    
     

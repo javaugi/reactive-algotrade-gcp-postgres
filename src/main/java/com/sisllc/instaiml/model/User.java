@@ -1,14 +1,16 @@
 package com.sisllc.instaiml.model;
 
-import org.springframework.data.annotation.Id;
 import java.time.OffsetDateTime;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import reactor.core.publisher.Mono;
 
 @Data
 @Builder(toBuilder = true)
@@ -21,6 +23,8 @@ public class User {
 
     private String name;
     private String username;
+
+    @Column("password")
     private String password;
     private String roles;
 
@@ -43,5 +47,28 @@ public class User {
 
     @LastModifiedDate
     @Column("updated_date")
-    private OffsetDateTime updatedDate;    
+    private OffsetDateTime updatedDate;
+
+    // ===== REACTIVE PASSWORD HANDLING =====
+    public static Mono<User> withHashedPassword(User user, PasswordEncoder encoder) {
+        return Mono.just(user)
+            .map(u -> {
+                u.setPassword(encoder.encode(u.getPassword()));
+                return u;
+            });
+    }
+
+    // ===== REACTIVE PASSWORD HANDLING =====
+    public static Mono<User> withHashedPassword(User user, String hashedPassword) {
+        return Mono.just(user)
+            .map(u -> {
+                u.setPassword(hashedPassword);
+                return u;
+            });
+    }
+
+    // Password verification
+    public Mono<Boolean> verifyPassword(String rawPassword, PasswordEncoder encoder) {
+        return Mono.just(encoder.matches(rawPassword, this.password));
+    }
 }

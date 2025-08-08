@@ -2,7 +2,8 @@ CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) PRIMARY KEY DEFAULT gen_random_uuid()::text,
     name VARCHAR(100),
     username VARCHAR(50),
-    password VARCHAR(256),
+    password VARCHAR(60) NOT NULL,
+  -- BCrypt hashes are always 60 chars
     roles VARCHAR(256),
     email VARCHAR(200),
     phone VARCHAR(50),

@@ -31,18 +31,8 @@ public class PharmacyGenerator extends DataGeneratorBase {
     }     
     
     public static Pharmacy generate(DatabaseClient dbClient) {
-        Pharmacy pharmacy = Pharmacy.builder()
-            .id(UUID.randomUUID().toString())
-            .pharmacyCode("PHAR-" + JAVA_FAKER.number().digits(6))
-            .name("PHARMA " + JAVA_FAKER.address().streetName())
-            .email(JAVA_FAKER.internet().emailAddress())
-            .phone(JAVA_FAKER.phoneNumber().phoneNumber())
-            .address(JAVA_FAKER.address().fullAddress())
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
-        log.trace("pharmacy {}", insert(dbClient, pharmacy).subscribe());     
+        Pharmacy pharmacy = generate();
+        log.trace("pharmacy {}", insert(dbClient, pharmacy).subscribe());
         return pharmacy;
     }     
     

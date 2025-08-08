@@ -35,22 +35,8 @@ public class PrescriptionGenerator extends DataGeneratorBase {
     }    
     
     public static Prescription generate(DatabaseClient dbClient, String patientId, String physicianId, String medicationId, String pharmacyId) {
-        Prescription prescription = Prescription.builder()
-            .id(UUID.randomUUID().toString())
-            .patientId(patientId)
-            .physicianId(physicianId)
-            .medicationId(medicationId)
-            .pharmacyId(pharmacyId)
-            .quantity(JAVA_FAKER.number().numberBetween(1, 30))
-            .refills(JAVA_FAKER.number().numberBetween(1, 4))
-            .status(JAVA_FAKER.options().option("active", "expired", "filled", "cancelled"))
-            .fillDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(2, 20), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .prescriptionDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))            
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
-        log.trace("prescription {}", insert(dbClient, prescription).subscribe());     
+        Prescription prescription = generate(patientId, physicianId, medicationId, pharmacyId);
+        log.trace("prescription {}", insert(dbClient, prescription).subscribe());
         return prescription;
     }    
     

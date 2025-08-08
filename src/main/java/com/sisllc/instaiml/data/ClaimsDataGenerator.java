@@ -39,23 +39,8 @@ public class ClaimsDataGenerator extends DataGeneratorBase {
     }    
        
     public static ClaimsData generate(DatabaseClient dbClient, String memberId, String providerId, String insurancePlanId) {
-        ClaimsData claimsData = ClaimsData.builder()
-            .id(UUID.randomUUID().toString())
-            .memberId(memberId)
-            .providerId(providerId)
-            .insurancePlanId(insurancePlanId)
-            .billedAmount(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 10, 3000)))
-            .allowedAmount(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 10, 3000)))
-            .paidAmount(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 10, 3000)))
-            .diagnosisCodes(NET_FAKER.medicalProcedure().icd10())
-            .procedureCodes(NET_FAKER.medicalProcedure().icd10())
-            .claimStatus(NET_FAKER.options().option("SUBMITTED", "RE-SUBMITTED", "PROCESSED", "IN_PROGRESS", "PENDING", "REJECTED", "PAID"))
-            .serviceDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(20, 50), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .claimDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(5, 20), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(100, 300), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 100), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .build();
-        
+        ClaimsData claimsData = generate(memberId, providerId, insurancePlanId);
+
         log.trace("claimsData {}", insert(dbClient, claimsData).subscribe());
         return claimsData;
     }    
