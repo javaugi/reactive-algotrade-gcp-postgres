@@ -118,7 +118,7 @@ public class InsurancePricingAnalyticalService {
 
     private void doMarketBenchmarkingAnalysis() {
         try{
-            insurancePricingRepository.marketBenchmarkingAnalysis()
+            marketBenchmarkingAnalysis()
                 .doOnNext(dto -> log.debug("marketBenchmarkingAnalysis {}", dto))
                 .switchIfEmpty(dto -> log.debug("marketBenchmarkingAnalysis: No Data Found"))
                 .subscribe();
@@ -133,7 +133,7 @@ public class InsurancePricingAnalyticalService {
 
     private void doRiskPoolAnalysis() {
         try{
-            insurancePricingRepository.riskPoolAnalysis()
+            riskPoolAnalysis()
                 .doOnNext(dto -> log.debug("riskPoolAnalysis {}", dto))
                 .switchIfEmpty(dto -> log.debug("riskPoolAnalysis: No Data Found"))
                 .subscribe();

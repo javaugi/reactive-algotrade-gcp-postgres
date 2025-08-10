@@ -16,12 +16,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 import reactor.netty.http.client.HttpClient;
@@ -75,19 +77,15 @@ curl http://localhost:11434/api/generate -d '{
                     });
             })
             .bodyToMono(String.class)
-            // 5. Add response stream logging
-            .doOnNext(chunk -> log.debug("Received chunk: {}", chunk))
-            .doOnSubscribe(sub -> log.debug("Starting request"))
-            //.doOnComplete(() -> log.debug("Stream completed successfully"))
-            .doOnError(e -> {
-                if (e instanceof ConnectException) {
-                    log.error("Failed to connect to Ollama service at {}", OLLAMA_API);
-                } else if (e instanceof ReadTimeoutException) {
-                    log.error("Timeout while waiting for Ollama response");
+            .onErrorResume(WebClientResponseException.class, ex -> {
+                log.debug("queryByWebClient WebClientResponseException ", ex);
+                // Provide a more specific error message for a 403 Forbidden error
+                if (ex.getStatusCode() == HttpStatus.FORBIDDEN) {
+                    return Mono.error(new RuntimeException("403 FORBIDDEN: Your API key is likely invalid or missing permissions."));
                 }
-                log.error("Query error occurred", e);
-            })
-            .doOnCancel(() -> log.warn("Query was cancelled"));
+                // For other WebClient errors, re-throw a more generic exception
+                return Mono.error(new RuntimeException("Error from API: " + ex.getStatusCode() + " - " + ex.getResponseBodyAsString(), ex));
+            });
     }
 
     //(Use this if the API returns a stream like Server-Sent Events)

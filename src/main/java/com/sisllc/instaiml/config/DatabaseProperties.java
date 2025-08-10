@@ -38,9 +38,9 @@ public class DatabaseProperties {
     private String prodDatabase;
     
     private ProfileSetting profileSetting;
-    private Boolean setupMockUserOnly;
-    private Boolean truncateMockData;
-    private Boolean skipDataInit;
+    private Boolean setupMockUserOnly = false;
+    private Boolean truncateMockData = false;
+    private Boolean skipDataInit = false;
     private String databaseUsed;
 
     private String url;

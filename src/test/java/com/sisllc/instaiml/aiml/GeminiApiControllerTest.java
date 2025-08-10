@@ -4,7 +4,6 @@
  */
 package com.sisllc.instaiml.aiml;
 
-import com.sisllc.instaiml.service.aiml.GeminiApiService;
 import java.time.Duration;
 import java.util.Collections;
 import java.util.Map;
@@ -12,11 +11,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import static org.mockito.ArgumentMatchers.any;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import static org.mockito.Mockito.when;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -24,16 +20,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.reactive.server.WebTestClient;
-import org.springframework.test.web.reactive.server.WebTestClient.RequestBodyUriSpec;
-import org.springframework.test.web.reactive.server.WebTestClient.RequestHeadersUriSpec;
-import org.springframework.test.web.reactive.server.WebTestClient.ResponseSpec;
-import org.springframework.web.reactive.function.client.WebClient;
 
 @ActiveProfiles("mock")
 @SpringBootTest
 @AutoConfigureWebTestClient
-@Disabled("Temporarily disabled for CICD")
 @ExtendWith(MockitoExtension.class)
+@Disabled("Temporarily disabled for CICD")
 public class GeminiApiControllerTest {
 
     // Create a request body as a Map, which will be serialized to JSON
@@ -42,6 +34,7 @@ public class GeminiApiControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    /*
     @Mock
     private WebClient.Builder webClientBuilder; // Mock the builder
 
@@ -58,9 +51,11 @@ public class GeminiApiControllerTest {
 
     @InjectMocks
     private GeminiApiService geminiApiService; // Inject mocks into your service
+    // */
 
     @BeforeEach
     void setUp() {
+        /*
         // Configure the mocked WebClient.Builder to return the mocked WebClient
         when(webClientBuilder.build()).thenReturn(webClient);
 
@@ -69,13 +64,14 @@ public class GeminiApiControllerTest {
         when(webTestClient.post()).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.uri(any(String.class))).thenReturn(requestBodyUriSpec);
         when(requestBodyUriSpec.bodyValue(any())).thenReturn(requestHeadersUriSpec); // or body(Mono.just(any()), AnyClass.class)
-        //when(requestHeadersUriSpec.retrieve()).thenReturn(responseSpec);
+        when(requestHeadersUriSpec.exchange()).thenReturn(responseSpec);
+        // */
         //when(responseSpec.bodyToMono(String.class)).thenReturn(Mono.just("mocked Gemini API response"));
         // Adjust the above chain based on how your GeminiApiService actually uses WebClient
         // e.g., if it uses .get(), .put(), .exchange(), etc.
     }
 
-    //@Test
+    @Test
     public void testGeminiApiByWebClient() {
         webTestClient.mutate()
             .responseTimeout(Duration.ofSeconds(30)) // Increase timeout
@@ -99,7 +95,7 @@ public class GeminiApiControllerTest {
             });
     }
 
-    //@Test
+    @Test
     public void testGeminiApiByTemplate() {
         webTestClient.mutate()
             .responseTimeout(Duration.ofSeconds(30)) // Increase timeout

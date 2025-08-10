@@ -2,6 +2,7 @@ package com.sisllc.instaiml;
 
 import java.util.Arrays;
 import static org.junit.jupiter.api.AssertionsKt.assertNotNull;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.web.reactive.function.client.WebClientAutoConfiguration;
 import org.springframework.boot.test.autoconfigure.web.reactive.AutoConfigureWebTestClient;
@@ -27,7 +28,7 @@ public class MyReactiveApplicationTests {
     @Autowired(required = false) // required=false if context might not be fully configured in all slice tests
     private ApplicationContext context;
 
-    //@Test
+    @Test
     public void contextLoads() {
         assertNotNull(context);
         Arrays.stream(context.getBeanDefinitionNames())
@@ -35,7 +36,7 @@ public class MyReactiveApplicationTests {
             .forEach(System.out::println);
     }
 
-    //@Test
+    @Test
     void contextLoadsHealth() {
         // Verify that the Spring application context has loaded successfully.
         // If the database auto-configuration was still an issue, this would fail.
