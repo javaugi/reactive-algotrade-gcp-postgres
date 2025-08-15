@@ -5,7 +5,7 @@
 package com.sisllc.instaiml.controller.aiml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.sisllc.instaiml.service.aiml.OpenAiService;
+import com.sisllc.instaiml.service.aiml.OpenAiApiService;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +22,7 @@ public class OpenAiController {
 
     private final static Logger log = LoggerFactory.getLogger(OpenAiController.class);
 
-    private final OpenAiService openAIService;
+    private final OpenAiApiService openAIService;
 
     @GetMapping
     public Flux<String> getOpenAIResponse(@RequestParam String prompt) {
@@ -44,9 +44,9 @@ public class OpenAiController {
 @RestController
 public class OpenAiController {
 
-    private final OpenAiService openAIService;
+    private final OpenAiApiService openAIService;
 
-    public OpenAiController(OpenAiService openAIService) {
+    public OpenAiController(OpenAiApiService openAIService) {
         this.openAIService = openAIService;
     }
     

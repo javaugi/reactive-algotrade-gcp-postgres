@@ -5,7 +5,7 @@
 package com.sisllc.instaiml.controller.aiml;
 
 import com.sisllc.instaiml.dto.OllamaRequest;
-import com.sisllc.instaiml.service.aiml.OllamaService;
+import com.sisllc.instaiml.service.aiml.OllamaApiService;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -55,7 +55,7 @@ public class OllamaOcrController {
     private String apiKey;
 
     @Autowired
-    private OllamaService ollamaService;
+    private OllamaApiService ollamaService;
 
     @PostMapping
     public Mono<ResponseEntity<String>> queryOllamaByWebClient(@RequestBody OllamaRequest ollamaRequest) {

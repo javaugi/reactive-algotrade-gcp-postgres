@@ -18,13 +18,13 @@ public class PatientGenerator extends DataGeneratorBase {
     public static Patient generate() {
         Patient patient = Patient.builder()
             .id(UUID.randomUUID().toString())
-            .name(JAVA_FAKER.name().fullName())
-            .birthDate(JAVA_FAKER.date().birthday().toInstant().atOffset(ZoneOffset.UTC))
-            .email(JAVA_FAKER.internet().emailAddress())
-            .phone(JAVA_FAKER.phoneNumber().phoneNumber())
-            .address(JAVA_FAKER.address().fullAddress())
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .name(FAKER.name().fullName())
+            .birthDate(FAKER.date().birthday().toInstant().atOffset(ZoneOffset.UTC))
+            .email(FAKER.internet().emailAddress())
+            .phone(FAKER.phoneNumber().phoneNumber())
+            .address(FAKER.address().fullAddress())
+            .createdDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .updatedDate(FAKER.date().past(FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return patient;

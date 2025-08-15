@@ -22,9 +22,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 @Service
-public class OpenAiService {
+public class OpenAiApiService {
 
-    private final static Logger log = LoggerFactory.getLogger(OpenAiService.class);
+    private final static Logger log = LoggerFactory.getLogger(OpenAiApiService.class);
 
     private final String prompt = """
                 Explain quantum computing.

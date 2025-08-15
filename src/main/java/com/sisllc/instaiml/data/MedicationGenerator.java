@@ -18,12 +18,12 @@ public class MedicationGenerator extends DataGeneratorBase {
     public static Medication generate() {
         Medication medication = Medication.builder()
             .id(UUID.randomUUID().toString())
-            .name(JAVA_FAKER.medical().medicineName())
-            .description(JAVA_FAKER.medical().medicineName())
-            .dosage(JAVA_FAKER.number().numberBetween(1, 3) + " per day")
-            .unit(JAVA_FAKER.number().numberBetween(20, 300) + " mg")
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .name(FAKER.medical().medicineName())
+            .description(FAKER.medical().medicineName())
+            .dosage(FAKER.number().numberBetween(1, 3) + " per day")
+            .unit(FAKER.number().numberBetween(20, 300) + " mg")
+            .createdDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .updatedDate(FAKER.date().past(FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return medication;

@@ -6,7 +6,7 @@ package com.sisllc.instaiml.controller.aiml;
 
 import com.sisllc.instaiml.config.AiConfig;
 import com.sisllc.instaiml.dto.OllamaRequest;
-import com.sisllc.instaiml.service.aiml.OpenAiDsService;
+import com.sisllc.instaiml.service.aiml.OpenAiApiDsService;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -38,7 +38,7 @@ public class OpenAiDsController {
     private final @Qualifier(AiConfig.OPEN_AI_CHAT_MODEL_DS)
     OpenAiChatModel chatModel;
     
-    private final OpenAiDsService dsService;
+    private final OpenAiApiDsService dsService;
 
     @PostMapping
     public Mono<ResponseEntity<String>> queryOllamaByWebClient(@RequestBody OllamaRequest ollamaRequest) {

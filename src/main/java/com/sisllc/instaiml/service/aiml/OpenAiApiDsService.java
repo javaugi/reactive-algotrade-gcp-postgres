@@ -34,7 +34,7 @@ import reactor.netty.http.client.HttpClient;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class OpenAiDsService {
+public class OpenAiApiDsService {
 
     public static final String ML_Q = "what are the output formats from unstructured document processed by AI ML";
 

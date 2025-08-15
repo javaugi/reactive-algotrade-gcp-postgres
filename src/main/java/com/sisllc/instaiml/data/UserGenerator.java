@@ -4,7 +4,7 @@
  */
 package com.sisllc.instaiml.data;
 
-import static com.sisllc.instaiml.data.DataGeneratorBase.JAVA_FAKER;
+import static com.sisllc.instaiml.data.DataGeneratorBase.FAKER;
 import com.sisllc.instaiml.model.User;
 import java.time.ZoneOffset;
 import java.util.UUID;
@@ -18,22 +18,22 @@ import reactor.core.publisher.Mono;
 public class UserGenerator extends DataGeneratorBase {
     
     public static User generate(String username, PasswordEncoder passwordEncoder) {
-        String firstName = JAVA_FAKER.name().firstName();
-        String lastName = JAVA_FAKER.name().lastName();
+        String firstName = FAKER.name().firstName();
+        String lastName = FAKER.name().lastName();
         User user = User.builder()
             .id(UUID.randomUUID().toString())
             .name(firstName + " " + lastName)
             .username(username)
             .password(passwordEncoder.encode(username))
             .roles("ROLE_USER,ROLE_ADMIN")
-            .email(JAVA_FAKER.internet().emailAddress())
-            .phone(JAVA_FAKER.phoneNumber().phoneNumber())
+            .email(FAKER.internet().emailAddress())
+            .phone(FAKER.phoneNumber().phoneNumber())
             .firstName(firstName)
             .lastName(lastName)
-            .age(JAVA_FAKER.number().numberBetween(18, 70))
-            .city(JAVA_FAKER.address().city())
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))            
+            .age(FAKER.number().numberBetween(18, 70))
+            .city(FAKER.address().city())
+            .createdDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .updatedDate(FAKER.date().past(FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))            
             .build();
         
         return user;

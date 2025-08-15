@@ -22,13 +22,13 @@ public class PrescriptionGenerator extends DataGeneratorBase {
             .physicianId(physicianId)
             .medicationId(medicationId)
             .pharmacyId(pharmacyId)
-            .quantity(JAVA_FAKER.number().numberBetween(1, 30))
-            .refills(JAVA_FAKER.number().numberBetween(1, 4))
-            .status(JAVA_FAKER.options().option("active", "expired", "filled", "canelled"))
-            .fillDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(2, 20), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .prescriptionDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))            
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .quantity(FAKER.number().numberBetween(1, 30))
+            .refills(FAKER.number().numberBetween(1, 4))
+            .status(FAKER.options().option("active", "expired", "filled", "canelled"))
+            .fillDate(FAKER.date().past(FAKER.number().numberBetween(2, 20), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .prescriptionDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))            
+            .createdDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .updatedDate(FAKER.date().past(FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return prescription;

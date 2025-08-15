@@ -19,12 +19,12 @@ public class MemberGenerator extends DataGeneratorBase {
         Member member = Member.builder()
             .id(UUID.randomUUID().toString())
             .insurancePlanId(insurancePlanId)
-            .name(JAVA_FAKER.name().fullName())
-            .gender(JAVA_FAKER.demographic().sex())
-            .tobaccoUser(JAVA_FAKER.bool().bool())
-            .birthDate(NET_FAKER.date().birthday(20, 90).toInstant().atOffset(ZoneOffset.UTC))
-            .enrollmentDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .terminationDate(JAVA_FAKER.date().future(JAVA_FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .name(FAKER.name().fullName())
+            .gender(FAKER.demographic().sex())
+            .tobaccoUser(FAKER.bool().bool())
+            .birthDate(FAKER.date().birthday(20, 90).toInstant().atOffset(ZoneOffset.UTC))
+            .enrollmentDate(FAKER.date().past(FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .terminationDate(FAKER.date().future(FAKER.number().numberBetween(1, 365), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return member;

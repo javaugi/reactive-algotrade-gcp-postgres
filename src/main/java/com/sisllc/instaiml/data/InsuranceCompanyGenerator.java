@@ -17,12 +17,12 @@ public class InsuranceCompanyGenerator extends DataGeneratorBase {
     public static InsuranceCompany generate() {
         InsuranceCompany insuranceCompany = InsuranceCompany.builder()
             .id(UUID.randomUUID().toString())
-            .companyCode("CC-" + JAVA_FAKER.number().digits(6))
-            .companyName(JAVA_FAKER.company().name())
-            .stateLicenses("LIC-" + JAVA_FAKER.number().digits(6))
-            .financialRating("RATE-" + NET_FAKER.financialTerms().noun())
-            .contactInfo(NET_FAKER.address().fullAddress())
-            .marketShare(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 0, 1)))
+            .companyCode("CC-" + FAKER.number().digits(6))
+            .companyName(FAKER.company().name())
+            .stateLicenses("LIC-" + FAKER.number().digits(6))
+            .financialRating("RATE-" + FAKER.financialTerms().noun())
+            .contactInfo(FAKER.address().fullAddress())
+            .marketShare(new BigDecimal(FAKER.number().randomDouble(2, 0, 1)))
             .build();
         
         return insuranceCompany;

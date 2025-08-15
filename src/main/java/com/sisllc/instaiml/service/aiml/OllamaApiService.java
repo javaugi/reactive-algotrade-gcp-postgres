@@ -38,7 +38,7 @@ Available DeepSeek Models on Ollama:
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class OllamaService {
+public class OllamaApiService {
 
     @Qualifier(AiConfig.REST_TEMPLATE)
     private final RestTemplate restTemplate;
@@ -220,7 +220,7 @@ Lombok (optional)
 Call Ollama API from Spring Boot
 Ollama runs a local REST API at http://localhost:11434.
 
-Service Class (OllamaService.java)
+Service Class (OllamaApiService.java)
 
 java
 import org.springframework.http.*;
@@ -228,7 +228,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 @Service
-public class OllamaService {
+public class OllamaApiService {
     
     private final String OLLAMA_API = "http://localhost:11434/api/generate";
     private final RestTemplate restTemplate = new RestTemplate();
@@ -264,9 +264,9 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/ai")
 public class AiController {
 
-    private final OllamaService ollamaService;
+    private final OllamaApiService ollamaService;
 
-    public AiController(OllamaService ollamaService) {
+    public AiController(OllamaApiService ollamaService) {
         this.ollamaService = ollamaService;
     }
 
@@ -312,7 +312,7 @@ Run the server:
 bash
 python ai_server.py
 Step 2: Call Python AI from Spring Boot
-Modify OllamaService to call the Python server instead:
+Modify OllamaApiService to call the Python server instead:
 
 java
 public String queryOllamaByTemplate(String prompt) {

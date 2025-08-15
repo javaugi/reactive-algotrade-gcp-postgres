@@ -20,10 +20,10 @@ public class DrugInventoryGenerator extends DataGeneratorBase {
             .id(UUID.randomUUID().toString())
             .pharmacyId(pharmacyId)
             .medicationId(medicationId)
-            .quantity(JAVA_FAKER.number().numberBetween(15, 100))
-            .reorderThreshold(JAVA_FAKER.number().numberBetween(10, 20))
-            .createdDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .updatedDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .quantity(FAKER.number().numberBetween(15, 100))
+            .reorderThreshold(FAKER.number().numberBetween(10, 20))
+            .createdDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .updatedDate(FAKER.date().past(FAKER.number().numberBetween(1, 30), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return drugInventory;

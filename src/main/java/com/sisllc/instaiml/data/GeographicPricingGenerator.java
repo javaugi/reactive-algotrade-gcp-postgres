@@ -25,10 +25,10 @@ public class GeographicPricingGenerator extends DataGeneratorBase {
             .insurancePlanId(insurancePlanId)
             .zipCode(zipCode)
             .stateAbbr(state)
-            .adjustmentFactor(new BigDecimal(JAVA_FAKER.number().randomDouble(2, 1, 5)))
-            .ratingArea(JAVA_FAKER.number().numberBetween(1, 5))
-            .effectiveDate(JAVA_FAKER.date().past(JAVA_FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
-            .expirationDate(JAVA_FAKER.date().future(JAVA_FAKER.number().numberBetween(100, 300), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .adjustmentFactor(new BigDecimal(FAKER.number().randomDouble(2, 1, 5)))
+            .ratingArea(FAKER.number().numberBetween(1, 5))
+            .effectiveDate(FAKER.date().past(FAKER.number().numberBetween(30, 90), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
+            .expirationDate(FAKER.date().future(FAKER.number().numberBetween(100, 300), TimeUnit.DAYS).toInstant().atOffset(ZoneOffset.UTC))
             .build();
         
         return geographicPricing;

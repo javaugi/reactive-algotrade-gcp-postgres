@@ -378,7 +378,7 @@ public class DataGeneratorService extends DataGeneratorBase {
             return unames.get(i);
         }
 
-        return JAVA_FAKER.name().username();
+        return FAKER.name().username();
     }
 
     private Flux<User> generateUsers() {
